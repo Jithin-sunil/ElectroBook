@@ -1,0 +1,48 @@
+{% extends 'User/head.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="text-center text-primary">My Bookings</h2>
+
+    <div class="row justify-content-center">
+        <div class="col-md-10">
+            <div class="card shadow p-4">
+                <div class="d-flex flex-wrap justify-content-center gap-3">
+                    {% if cart %}
+                        {% for i in cart %}
+                        <div class="card text-center shadow-sm p-3" style="width: 18rem;">
+                            <img src="{{ i.product.product_photo.url }}" alt="Product Image" class="rounded img-fluid mx-auto d-block" style="height: 100px; width: 100px; object-fit: cover;">
+                            <div class="card-body">
+                                <p class="card-text"><strong>Product:</strong> {{ i.product.product_name }}</p>
+                                <p class="card-text"><strong>Seller:</strong> {{ i.product.seller.seller_name }}</p>
+                                <p class="card-text"><strong>Price:</strong> ₹{{ i.product.product_price }}</p>
+                                <p class="card-text"><strong>Quantity:</strong> {{ i.cart_qty }}</p>
+                                <p class="card-text"><strong>Status:</strong> 
+                                    {% if i.cart_status == 2 %} <span class="badge bg-success">Payment Successful</span>
+                                    {% elif i.cart_status == 3 %} <span class="badge bg-warning text-dark">Order Packed</span>
+                                    {% elif i.cart_status == 4 %} <span class="badge bg-info text-dark">Order Collected</span>
+                                    <p class="card-text"><strong>Delivery Agent:</strong> {{ i.electrician.electrician_name }}</p>
+                                    <a href="{% url 'User:viewelectrician' i.electrician.id %}"class="btn btn-outline-success btn-sm fw-bold" >details</a>
+                                    {% elif i.cart_status == 5 %} <span class="badge bg-primary">Delivered</span>
+                                    {% endif %}
+                                </p>
+                                
+                            </div>
+                            {% if i.cart_status == 5 %}
+                            <div class="mb-3">
+                                <a href="{% url 'User:rating' i.product.id %}" class="btn btn-outline-success btn-sm fw-bold">⭐ Rate</a>
+                                <a href="{% url 'User:complaint' i.product.id %}" class="btn btn-outline-danger btn-sm fw-bold">⚠ Complaint</a>
+                            </div>
+                            {% endif %}
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                        <p class="text-center text-danger fw-bold">No Bookings Found</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

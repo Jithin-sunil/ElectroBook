@@ -1,0 +1,48 @@
+{% extends 'User/head.html' %}
+{% load static %}
+{% block content %}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow p-4">
+                <h3 class="text-center mb-4 fw-bold text-primary">My Profile</h3>
+                <div class="text-center mb-3">
+                    <img src="{{ user.user_photo.url }}" alt="Profile Image" class="rounded-circle border" height="120" width="120">
+                </div>
+                <table class="table table-bordered table-striped">
+                    <tr>
+                        <th class="bg-light">Name:</th>
+                        <td>{{ user.user_name }}</td>
+                    </tr>
+                    <tr>
+                        <th class="bg-light">Email:</th>
+                        <td>{{ user.user_email }}</td>
+                    </tr>
+                    <tr>
+                        <th class="bg-light">Contact:</th>
+                        <td>{{ user.user_contact }}</td>
+                    </tr>
+                    <tr>
+                        <th class="bg-light">Address:</th>
+                        <td>{{ user.user_address }}</td>
+                    </tr>
+                    <tr>
+                        <th class="bg-light">District:</th>
+                        <td>{{ user.place.district.district_name }}</td>
+                    </tr>
+                    <tr>
+                        <th class="bg-light">Place:</th>
+                        <td>{{ user.place.place_name }}</td>
+                    </tr>
+                </table>
+                <div class="text-center mt-3">
+                    <a href="{% url 'User:editprofile' %}" class="btn btn-warning me-2">Edit Profile</a>
+                    <a href="{% url 'User:changepassword' %}" class="btn btn-danger">Change Password</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,118 @@
+/**
+ * ElectriBook - Electrician & Plumber Booking | Electrical Items
+ * Custom theme for ElectriBook project
+ */
+
+:root {
+  --eb-primary: #0ea5e9;
+  --eb-primary-dark: #0284c7;
+  --eb-secondary: #1e293b;
+  --eb-accent: #f59e0b;
+  --eb-success: #10b981;
+  --eb-light-bg: #f8fafc;
+  --eb-card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.08), 0 2px 4px -2px rgba(0, 0, 0, 0.06);
+  --eb-radius: 12px;
+  --eb-font: 'DM Sans', 'Segoe UI', sans-serif;
+}
+
+body {
+  --bs-primary: #0ea5e9;
+  --bs-primary-rgb: 14, 165, 233;
+  --bs-secondary: #1e293b;
+  --bs-secondary-rgb: 30, 41, 59;
+  --bs-body-font-family: var(--eb-font);
+  --bs-body-color: #475569;
+  font-family: var(--eb-font);
+}
+
+.btn-primary {
+  --bs-btn-bg: #0ea5e9;
+  --bs-btn-border-color: #0ea5e9;
+  --bs-btn-hover-bg: #0284c7;
+  --bs-btn-hover-border-color: #0284c7;
+  background: linear-gradient(135deg, #0ea5e9, #0284c7);
+  border: none;
+}
+
+.btn-outline-primary {
+  --bs-btn-color: #0ea5e9;
+  --bs-btn-border-color: #0ea5e9;
+  --bs-btn-hover-bg: #0ea5e9;
+  --bs-btn-hover-border-color: #0ea5e9;
+}
+
+.bg-primary { background-color: #0ea5e9 !important; }
+.text-primary { color: #0ea5e9 !important; }
+.border-primary { border-color: #0ea5e9 !important; }
+
+/* Header */
+.eb-navbar {
+  background: #fff;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+}
+
+.eb-navbar .nav-link {
+  font-weight: 600;
+  color: #1e293b !important;
+  padding: 0.5rem 0.75rem;
+  border-radius: 8px;
+  transition: all 0.2s;
+}
+
+.eb-navbar .nav-link:hover {
+  color: #0ea5e9 !important;
+  background: rgba(14, 165, 233, 0.08);
+}
+
+.eb-logo {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: #1e293b;
+  letter-spacing: -0.5px;
+}
+
+.eb-logo span { color: #0ea5e9; }
+
+/* Cards */
+.eb-card {
+  border: none;
+  border-radius: var(--eb-radius);
+  box-shadow: var(--eb-card-shadow);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.eb-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1), 0 8px 10px -6px rgba(0,0,0,0.06);
+}
+
+/* Footer */
+.eb-footer {
+  background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%);
+  color: #94a3b8;
+}
+
+.eb-footer .widget-title {
+  color: #fff;
+  font-weight: 700;
+  font-size: 0.95rem;
+  margin-bottom: 1rem;
+}
+
+.eb-footer .nav-link {
+  color: #94a3b8 !important;
+  padding: 0.25rem 0;
+  font-size: 0.9rem;
+}
+
+.eb-footer .nav-link:hover { color: #0ea5e9 !important; }
+
+/* Hero */
+.eb-hero {
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
+  color: #fff;
+}
+
+/* Badges */
+.badge.bg-eb-primary { background: #0ea5e9; }
+.badge.bg-eb-accent { background: #f59e0b; }

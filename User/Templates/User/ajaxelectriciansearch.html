@@ -1,0 +1,36 @@
+<div class="row row-cols-1 row-cols-md-3 g-4">
+    {% for i in electricians %}
+    <div class="col">
+        <div class="card shadow-sm border-0 h-100 p-3">
+            <div class="text-decoration-none text-dark text-center">
+                <figure class="text-center p-3">
+                    <img src="{{ i.electrician_photo.url }}" class="shadow-lg" alt="photo">
+                </figure>
+                <div class="card-body text-center">
+                    <h4 class="fw-bold text-uppercase text-primary">{{ i.electrician_name }}</h4>
+                    <h5 class="text-muted">{{ i.work_category.work_category_name }}</h5>
+                    <p class="text-muted fs-6 m-0"><strong>{{ i.electrician_address }}</strong></p>
+                    <p class="text-muted small"><strong>{{ i.local_place.local_place_name }}, {{
+                            i.local_place.place.place_name }}, {{ i.local_place.place.district.district_name }}</strong>
+                    </p>
+                    <p class="text-muted small"><strong>{{ i.electrician_contact }}</strong></p>
+                    <div class="mb-2">
+                        {% for j in "12345" %}
+                        {% if forloop.counter <= i.avg_rating %}<i class="bi bi-star-fill text-warning small"></i>{% else %}<i class="bi bi-star text-warning small"></i>{% endif %}
+                        {% endfor %}
+                        <span class="ms-1 small text-muted">({{ i.avg_rating }}/5{% if i.rating_count %} · {{ i.rating_count }} reviews{% endif %})</span>
+                    </div>
+                    <div class="d-flex gap-2 justify-content-center flex-wrap">
+                        <a href="{% url 'User:bookelectrician' i.id %}" class="btn btn-success btn-sm">Book Now</a>
+                        <a href="{% url 'User:electrician_rating' i.id %}" class="btn btn-outline-primary btn-sm">View Profile & Reviews</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <div class="col text-center">
+        <p class="text-danger fs-4">No electricians found.</p>
+    </div>
+    {% endfor %}
+</div>

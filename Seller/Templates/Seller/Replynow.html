@@ -1,0 +1,45 @@
+{% extends 'Seller/head.html' %}
+{% load static %}
+{% block content %}
+
+<section class="py-5">
+  <div class="container">
+    <h2 class="fw-bold text-dark mb-4"><i class="bi bi-reply me-2"></i>Reply to Complaint</h2>
+    <div class="row justify-content-center">
+      <div class="col-lg-8">
+        <div class="card eb-card border-0 overflow-hidden">
+          <div class="card-body p-4">
+            <div class="row mb-4">
+              <div class="col-md-3 text-muted">Subject</div>
+              <div class="col-md-9 fw-bold">{{ complaint.complaint_title }}</div>
+            </div>
+            <div class="row mb-4">
+              <div class="col-md-3 text-muted">Complaint</div>
+              <div class="col-md-9">{{ complaint.complaint_content }}</div>
+            </div>
+            <div class="row mb-4">
+              <div class="col-md-3 text-muted">Date</div>
+              <div class="col-md-9">{{ complaint.complaint_date }}</div>
+            </div>
+            <div class="row mb-4">
+              <div class="col-md-3 text-muted">User</div>
+              <div class="col-md-9">{{ complaint.user.user_name }}</div>
+            </div>
+            <form action="" method="POST">
+              {% csrf_token %}
+              <div class="mb-4">
+                <label for="reply" class="form-label fw-bold">Your Reply</label>
+                <textarea class="form-control" name="reply" id="reply" rows="4" required placeholder="Type your reply here..."></textarea>
+              </div>
+              <div class="d-flex gap-2">
+                <button type="submit" name="btnsubmit" class="btn btn-primary px-4"><i class="bi bi-send me-2"></i>Submit Reply</button>
+                <a href="{% url 'Seller:viewcomplaint' %}" class="btn btn-outline-secondary">Cancel</a>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

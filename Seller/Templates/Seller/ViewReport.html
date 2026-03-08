@@ -1,0 +1,90 @@
+{% extends 'Seller/head.html' %}
+{% load static %}
+{% block content %}
+
+<section class="py-5">
+  <div class="container">
+    <h2 class="fw-bold text-dark mb-4"><i class="bi bi-bar-chart me-2"></i>Sales Reports</h2>
+    <div class="row row-cols-1 row-cols-lg-2 g-4">
+      <div class="col">
+        <div class="card eb-card border-0 overflow-hidden">
+          <div class="card-header bg-white py-3">
+            <h5 class="fw-bold mb-0">Product Sales Distribution</h5>
+          </div>
+          <div class="card-body">
+            <div style="height:300px;position:relative;">
+              <canvas id="salesPieChart"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col">
+        <div class="card eb-card border-0 overflow-hidden">
+          <div class="card-header bg-white py-3">
+            <h5 class="fw-bold mb-0">Monthly Sales Overview</h5>
+          </div>
+          <div class="card-body">
+            <div style="height:300px;position:relative;">
+              <canvas id="salesBarChart"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script>
+  $(document).ready(function () {
+    $.ajax({
+      url: "{% url 'Seller:pdtchart' %}",
+      success: function (data) {
+        new Chart(document.getElementById('salesPieChart').getContext('2d'), {
+          type: 'pie',
+          data: {
+            labels: data.pie.labels,
+            datasets: [{
+              data: data.pie.data,
+              backgroundColor: ['#0ea5e9', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6'],
+              borderWidth: 2,
+              borderColor: '#fff'
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: { position: 'bottom' },
+              tooltip: {
+                callbacks: {
+                  label: function (ctx) { return ctx.label + ': ' + ctx.raw + ' sales'; }
+                }
+              }
+            }
+          }
+        });
+        new Chart(document.getElementById('salesBarChart').getContext('2d'), {
+          type: 'bar',
+          data: data.bar,
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: { position: 'top' },
+              tooltip: {
+                callbacks: {
+                  label: function (ctx) { return ctx.dataset.label + ': ₹' + ctx.raw; }
+                }
+              }
+            },
+            scales: { y: { beginAtZero: true } }
+          }
+        });
+      },
+      error: function () { console.error("Error fetching chart data"); }
+    });
+  });
+</script>
+{% endblock %}

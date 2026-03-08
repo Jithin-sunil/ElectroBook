@@ -1,0 +1,31 @@
+{% extends 'User/head.html' %}
+
+{% block content %}
+<div class="container mt-5">
+
+    <!-- Complaint Form -->
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow p-4">
+                <h3 class="text-center mb-3 text-primary">Submit a Complaint</h3>
+                <form action="" method="POST">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="txt_subname" class="form-label fw-bold">Subject:</label>
+                        <input type="text" class="form-control" required name="txt_subname" id="txt_subname" placeholder="Enter complaint subject...">
+                    </div>
+                    <div class="mb-3">
+                        <label for="txt_complaint" class="form-label fw-bold">Complaint Details:</label>
+                        <textarea name="txt_complaint" id="txt_complaint" rows="5" class="form-control" required placeholder="Describe your issue..."></textarea>
+                    </div>
+                    <div class="text-center">
+                        <button type="submit" name="btnsubmit" class="btn btn-success fw-bold">Submit</button>
+                        <button type="reset" name="btncancel" class="btn btn-danger fw-bold">Cancel</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+</div>
+{% endblock %}

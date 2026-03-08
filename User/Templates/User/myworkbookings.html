@@ -1,0 +1,73 @@
+{% extends 'User/head.html' %}
+{% load static %}
+{% block content %}
+<div class="container mt-5">
+    <h3 class="text-center text-primary mb-4">My Electrician Bookings</h3>
+    <div class="table-responsive shadow-sm">
+        <table class="table table-hover table-bordered align-middle text-center">
+            <thead class="table-dark">
+                <tr>
+                    <th>#</th>
+                    <th>Electrician Name</th>
+                    <th>Contact</th>
+                    <th>Booked On</th>
+                    <th>Work Date</th>
+                    <th>Work Details</th>
+                    <th>Status</th>
+                    <th>Estimate Amount</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody class="bg-white">
+                {% for b in bookings %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td class="fw-bold">{{ b.electrician.electrician_name }}</td>
+                    <td>{{ b.electrician.electrician_contact }}</td>
+                    <td>{{ b.booking_date|date:"M d, Y" }}</td>
+                    <td class="text-primary fw-bold">{{ b.work_date }}</td>
+                    <td>{{ b.work_details }}</td>
+                    <td>
+                        {% if b.booking_status == 0 %}
+                        <span class="badge bg-warning text-dark">Pending</span>
+                        {% elif b.booking_status == 1 %}
+                        <span class="badge bg-success">Accepted</span>
+                        {% elif b.booking_status == 2 %}
+                        <span class="badge bg-danger">Rejected</span>
+                        {% elif b.booking_status == 3 %}
+                        <span class="badge bg-info text-dark">Work Estimated</span>
+                        {% elif b.booking_status == 4 %}
+                        <span class="badge bg-primary">Completed/Paid</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if b.estimate_amount %}
+                        ₹{{ b.estimate_amount }}
+                        {% else %}
+                        <span class="text-muted">Not Yet Estimated</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if b.booking_status == 3 %}
+                        <a href="{% url 'User:pay_estimate' b.id %}" class="btn btn-sm btn-success">Pay Estimate</a>
+                        {% elif b.booking_status == 4 %}
+                        <a href="{% url 'User:electrician_rating' b.electrician.id %}" class="btn btn-sm btn-warning"><i class="bi bi-star-fill me-1"></i>Rate Electrician</a>
+                        {% elif b.booking_status == 0 %}
+                        <span class="text-muted">Awaiting Acceptance</span>
+                        {% elif b.booking_status == 1 %}
+                        <span class="text-muted">Work in Progress</span>
+                        {% else %}
+                        <span class="text-muted">-</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="9" class="text-center text-danger fs-5 py-4">You have no electrician bookings yet.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

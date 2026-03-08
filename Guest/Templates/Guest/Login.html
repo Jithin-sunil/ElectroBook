@@ -1,0 +1,64 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login - ElectriBook</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+  <link rel="stylesheet" href="{% static 'Main/css/electribook.css' %}">
+  <style>
+    .login-wrap { min-height: 100vh; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, #0f172a 0%, #1e3a5f 50%, #0f172a 100%); }
+    .login-card { max-width: 420px; border-radius: 16px; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25); }
+  </style>
+</head>
+<body>
+  <nav class="navbar eb-navbar py-3">
+    <div class="container">
+      <a class="navbar-brand eb-logo" href="{% url 'Guest:index' %}">Electri<span>Book</span></a>
+      <a href="{% url 'Guest:index' %}" class="btn btn-outline-primary btn-sm">Back to Home</a>
+    </div>
+  </nav>
+
+  <div class="login-wrap py-5">
+    <div class="container">
+      <div class="login-card card border-0 p-4 mx-auto bg-white">
+        <div class="card-body p-4">
+          <div class="text-center mb-4">
+            <i class="bi bi-box-arrow-in-right display-4 text-primary mb-2"></i>
+            <h2 class="fw-bold text-dark">Login</h2>
+            <p class="text-muted small">Enter your credentials to access ElectriBook</p>
+          </div>
+          <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="mb-3">
+              <label class="form-label fw-semibold">Username</label>
+              <div class="input-group">
+                <span class="input-group-text bg-light border-end-0"><i class="bi bi-person text-muted"></i></span>
+                <input type="text" class="form-control border-start-0" name="txt_uname" placeholder="Username" required>
+              </div>
+            </div>
+            <div class="mb-4">
+              <label class="form-label fw-semibold">Password</label>
+              <div class="input-group">
+                <span class="input-group-text bg-light border-end-0"><i class="bi bi-lock text-muted"></i></span>
+                <input type="password" class="form-control border-start-0" name="txt_apassword" placeholder="Password" required>
+              </div>
+            </div>
+            <button type="submit" name="btnsubmit" class="btn btn-primary w-100 py-3 rounded-pill fw-bold">Login</button>
+          </form>
+          <p class="text-center mt-4 small text-muted">Don't have an account? <a href="{% url 'Guest:userregistration' %}">Register as User</a> | <a href="{% url 'Guest:sellerreg' %}">Seller</a> | <a href="{% url 'Guest:Electricianreg' %}">Electrician</a></p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  {% if msg %}
+  <script>alert('{{ msg }}'); window.location = "{% url 'Guest:login' %}";</script>
+  {% endif %}
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,86 @@
+{% extends 'User/head.html' %}
+{% load static %}
+{% load mathfilters %}
+{% block content %}
+
+<div class="container py-5">
+    <h2 class="fw-bold text-dark mb-4"><i class="bi bi-box-seam me-2"></i>My Bookings</h2>
+
+    <div class="table-responsive">
+        <table class="table table-bordered align-middle bg-white">
+            {% for i in bookingdata %}
+            <!-- Booking Header -->
+            <tr class="table-light">
+                <td colspan="7" class="py-3">
+                    <strong>Order Number:</strong> #{{ i.id }} &nbsp;|&nbsp;
+                    <strong>Date:</strong> {{ i.booking_date|date:"d M Y" }} &nbsp;|&nbsp;
+                    <strong>Total Amount:</strong> ₹{{ i.booking_amount }} &nbsp;|&nbsp;
+                    <strong>Status:</strong>
+                    {% if i.booking_status == 1 %}
+                    <span class="text-warning">💳 Payment Pending</span>
+                    {% elif i.booking_status == 2 %}
+                    <span class="text-primary">✅ Payment Completed</span>
+                    {% elif i.booking_status == 3 %}
+                    <span class="text-success fw-bold">🎉 Booking Completed</span>
+                    {% else %}
+                    {{ i.booking_status }}
+                    {% endif %}
+                </td>
+            </tr>
+            <!-- Table Head -->
+            <tr class="table-dark">
+                <th class="text-center">SNO</th>
+                <th>Photo</th>
+                <th>Product Details</th>
+                <th class="text-center">Qty</th>
+                <th class="text-end">Amount</th>
+                <th>Tracking Status</th>
+                <th class="text-center">Action</th>
+            </tr>
+            <!-- Products -->
+            {% for j in i.tbl_cart_set.all %}
+            <tr>
+                <td class="text-center">{{ forloop.counter }}</td>
+                <td>
+                    <img src="{{ j.product.product_photo.url }}" alt="{{ j.product.product_name }}" class="img-thumbnail" style="max-width:100px;height:auto;">
+                </td>
+                <td>
+                    <strong>{{ j.product.product_name }}</strong><br>
+                    <span class="small text-muted">{{ j.product.product_description }}</span><br>
+                    <span class="text-primary">₹{{ j.product.product_price }}</span> per unit
+                </td>
+                <td class="text-center">{{ j.cart_qty }}</td>
+                <td class="text-end">₹{{ j.cart_qty|mul:j.product.product_price }}</td>
+                <td>
+                    {% if j.cart_status == 0 %}<span class="badge bg-secondary">🛒 In Cart</span>{% endif %}
+                    {% if j.cart_status == 1 %}<span class="badge bg-warning text-dark">💳 Payment Pending</span>{% endif %}
+                    {% if j.cart_status == 2 %}<span class="badge bg-info">✅ Payment Successful</span>{% endif %}
+                    {% if j.cart_status == 3 %}<span class="badge bg-secondary">📦 Packed</span>{% endif %}
+                    {% if j.cart_status == 4 %}<span class="badge bg-secondary">🚚 Shipped</span>{% endif %}
+                    {% if j.cart_status == 5 %}<span class="badge bg-primary">📍 Out for Delivery</span>{% endif %}
+                    {% if j.cart_status == 6 %}<span class="badge bg-success fw-bold">🎉 Delivered</span>{% endif %}
+                </td>
+                <td class="text-center">
+                    {% if j.cart_status == 6 %}
+                    <a href="{% url 'User:rating' j.product.id %}" class="btn btn-sm btn-outline-success">Give Review & Rating</a>
+                    {% else %}
+                    N/A
+                    {% endif %}
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="7" class="text-center text-muted py-3">No items in this order.</td>
+            </tr>
+            {% endfor %}
+
+            {% empty %}
+            <tr>
+                <td colspan="7" class="text-center text-muted py-5">No bookings found.</td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+</div>
+
+{% endblock %}

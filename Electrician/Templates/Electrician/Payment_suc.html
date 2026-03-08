@@ -1,0 +1,14 @@
+{% extends 'Electrician/head.html' %}
+{% load static %}
+{% block content %}
+
+<div class="container py-5 text-center">
+    <div class="card border-0 shadow-sm mx-auto p-5" style="max-width: 400px;">
+        <i class="bi bi-check-circle-fill text-success display-4 mb-3"></i>
+        <h4 class="text-success mb-2">Payment Successful!</h4>
+        <p class="text-muted mb-4">Your order has been placed successfully.</p>
+        <a href="{% url 'Electrician:mybooking' %}" class="btn btn-primary">View My Orders</a>
+    </div>
+</div>
+
+{% endblock %}

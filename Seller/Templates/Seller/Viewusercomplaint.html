@@ -1,0 +1,54 @@
+{% extends 'Seller/head.html' %}
+{% load static %}
+{% block content %}
+
+<section class="py-5">
+  <div class="container">
+    <h2 class="fw-bold text-dark mb-4"><i class="bi bi-exclamation-circle me-2"></i>Customer Complaints</h2>
+
+    <h5 class="fw-bold text-warning mb-3"><i class="bi bi-hourglass-split me-1"></i>New Complaints</h5>
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4 mb-5">
+      {% for i in complaint %}
+      <div class="col">
+        <div class="card eb-card h-100 overflow-hidden">
+          <img src="{{ i.product.product_photo.url }}" class="card-img-top" style="height:140px;object-fit:cover;" alt="{{ i.product.product_name }}">
+          <div class="card-body">
+            <h6 class="fw-bold text-danger mb-2 text-truncate">{{ i.complaint_title }}</h6>
+            <p class="small text-muted mb-1"><strong>Product:</strong> {{ i.product.product_name }}</p>
+            <p class="small text-muted mb-2"><strong>User:</strong> {{ i.user.user_name }}</p>
+            <a href="{% url 'Seller:replynow' i.id %}" class="btn btn-primary btn-sm w-100"><i class="bi bi-reply me-1"></i>Reply</a>
+          </div>
+        </div>
+      </div>
+      {% empty %}
+      <div class="col-12">
+        <div class="card eb-card border-0 p-4 text-center text-muted">No new complaints.</div>
+      </div>
+      {% endfor %}
+    </div>
+
+    <h5 class="fw-bold text-success mb-3"><i class="bi bi-check-circle me-1"></i>Solved Complaints</h5>
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+      {% for i in Solvedcomplaint %}
+      <div class="col">
+        <div class="card eb-card h-100 overflow-hidden border-success">
+          <img src="{{ i.product.product_photo.url }}" class="card-img-top" style="height:140px;object-fit:cover;" alt="{{ i.product.product_name }}">
+          <div class="card-body">
+            <h6 class="fw-bold text-dark mb-2 text-truncate">{{ i.complaint_title }}</h6>
+            <p class="small text-muted mb-1"><strong>Product:</strong> {{ i.product.product_name }}</p>
+            <p class="small text-muted mb-2"><strong>User:</strong> {{ i.user.user_name }}</p>
+            <div class="bg-light rounded p-2 small">
+              <strong>Reply:</strong> {{ i.complaint_reply }}
+            </div>
+          </div>
+        </div>
+      </div>
+      {% empty %}
+      <div class="col-12">
+        <div class="card eb-card border-0 p-4 text-center text-muted">No solved complaints yet.</div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endblock %}

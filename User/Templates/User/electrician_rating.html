@@ -1,0 +1,162 @@
+{% extends 'User/head.html' %}
+{% load static %}
+{% block content %}
+
+<div class="container mt-4 mb-5">
+    <div class="row">
+        <div class="col-md-4 mb-4">
+            <div class="card shadow-sm border-0 rounded-3 overflow-hidden">
+                <img src="{{ electrician.electrician_photo.url }}" class="card-img-top" style="height:200px;object-fit:cover;" alt="{{ electrician.electrician_name }}">
+                <div class="card-body text-center">
+                    <h5 class="fw-bold text-primary">{{ electrician.electrician_name }}</h5>
+                    <p class="text-muted small mb-0">{{ electrician.work_category.work_category_name|default:"Electrician/Plumber" }}</p>
+                    {% if electrician.local_place %}
+                    <p class="text-muted small">{{ electrician.local_place.local_place_name }}, {{ electrician.local_place.place.place_name }}</p>
+                    {% endif %}
+                    <div class="mb-3" id="rating_stars" role="button" tabindex="0" title="Click to view reviews">
+                        {% for i in ar %}
+                        {% if i <= avg %}
+                        <i class="bi bi-star-fill text-warning"></i>
+                        {% else %}
+                        <i class="bi bi-star text-warning"></i>
+                        {% endif %}
+                        {% endfor %}
+                        <span class="ms-2 small text-muted">({{ avg }}/5 · {{ count }} reviews)</span>
+                    </div>
+                    <a href="{% url 'User:bookelectrician' electrician.id %}" class="btn btn-primary btn-sm">Book Now</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-8">
+            <div class="card shadow-sm border-0 rounded-3 p-4 mb-4">
+                <h5 class="mb-3">Rate This Electrician</h5>
+                {% if request.session.uid %}
+                <button type="button" class="btn btn-outline-primary" id="add_review_btn">Write a Review</button>
+                {% else %}
+                <p class="text-muted mb-0"><a href="{% url 'Guest:login' %}">Login</a> to write a review.</p>
+                {% endif %}
+            </div>
+
+            <h5 class="mb-2">Reviews <small class="text-muted">({{ count }})</small></h5>
+            <div id="review_content" class="reviews-container">
+                {% if data %}
+                {% for i in data %}
+                <div class="card shadow-sm border-0 rounded-3 mb-3">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between mb-2">
+                            <strong>{{ i.user.user_name }}</strong>
+                            <span class="text-muted small">{{ i.datetime|date:"d M Y" }}</span>
+                        </div>
+                        <div class="mb-2">
+                            {% for j in ar %}
+                                {% if j <= i.rating_data %}<span class="text-warning">★</span>{% else %}<span class="text-muted">☆</span>{% endif %}
+                            {% endfor %}
+                            {{ i.rating_data }}/5
+                        </div>
+                        <p class="mb-0">{{ i.user_review }}</p>
+                    </div>
+                </div>
+                {% endfor %}
+                {% else %}
+                <p class="text-muted">No reviews yet. Be the first to rate!</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Review Modal -->
+<div class="modal fade" id="review_modal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Submit Review</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                {% csrf_token %}
+                <p class="mb-2">Your rating:</p>
+                <div class="mb-3">
+                    <span class="star-rating cursor-pointer" data-rating="1">☆</span>
+                    <span class="star-rating cursor-pointer" data-rating="2">☆</span>
+                    <span class="star-rating cursor-pointer" data-rating="3">☆</span>
+                    <span class="star-rating cursor-pointer" data-rating="4">☆</span>
+                    <span class="star-rating cursor-pointer" data-rating="5">☆</span>
+                </div>
+                <input type="hidden" id="rating_val" value="0">
+                <div class="mb-3">
+                    <label class="form-label">Your review</label>
+                    <textarea id="user_review" class="form-control" rows="3" placeholder="Share your experience..."></textarea>
+                </div>
+                <button type="button" class="btn btn-primary" id="save_review">Submit</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+#rating_stars { cursor: pointer; transition: opacity 0.2s; }
+#rating_stars:hover { opacity: 0.85; }
+/* Larger, easier-to-click stars in the Submit Review modal */
+#review_modal .star-rating {
+    font-size: 2.25rem;
+    margin: 0 2px;
+    cursor: pointer;
+    user-select: none;
+    line-height: 1.2;
+}
+#review_modal .star-rating:hover { opacity: 0.9; }
+</style>
+
+{% endblock %}
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    var rating_data = 0;
+    var modalEl = document.getElementById('review_modal');
+    var modal = modalEl ? new bootstrap.Modal(modalEl) : null;
+
+    $('#rating_stars').on('click keypress', function(e) {
+        if (e.type === 'keypress' && e.which !== 13) return;
+        document.getElementById('review_content').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+
+    $('#add_review_btn').on('click', function(){ if (modal) modal.show(); });
+
+    $('.star-rating').on('click', function(){
+        rating_data = $(this).data('rating');
+        $('#rating_val').val(rating_data);
+        $('.star-rating').text('☆').removeClass('text-warning');
+        $('.star-rating').filter(function(){ return $(this).data('rating') <= rating_data; }).text('★').addClass('text-warning');
+    });
+
+    $('#save_review').on('click', function(){
+        var user_review = $('#user_review').val().trim();
+        if (!rating_data || rating_data < 1) { alert('Please select a rating.'); return; }
+        if (!user_review) { alert('Please write your review.'); return; }
+        var csrfToken = document.querySelector('[name=csrfmiddlewaretoken]') ? document.querySelector('[name=csrfmiddlewaretoken]').value : '{{ csrf_token }}';
+        $.ajax({
+            url: "{% url 'User:ajax_electrician_star' %}",
+            type: 'POST',
+            data: {
+                rating_data: rating_data,
+                user_review: user_review,
+                eid: "{{ mid }}",
+                csrfmiddlewaretoken: csrfToken
+            },
+            success: function(html){
+                if (modal) modal.hide();
+                $('#review_content').html(html);
+                location.reload();
+            },
+            error: function(xhr){
+                if (xhr.status === 403) alert('Please login to submit a rating.');
+                else if (xhr.responseJSON && xhr.responseJSON.error) alert(xhr.responseJSON.error);
+                else alert('Could not submit rating. Please try again.');
+            }
+        });
+    });
+});
+</script>
+{% endblock %}

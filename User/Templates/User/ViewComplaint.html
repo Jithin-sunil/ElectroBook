@@ -1,0 +1,56 @@
+{% extends 'User/head.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-10">
+            <div class="card shadow p-4">
+                <h3 class="text-center mb-3 text-primary">Complaint List</h3>
+                
+                {% if complaint %}
+                <div class="table-responsive">
+                    <table class="table table-bordered table-striped text-center">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>#</th>
+                                <th>Subject</th>
+                                <th>Complaint</th>
+                                <th>Date</th>
+                                <th>Reply</th>
+                                <th>Reply Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for i in complaint %}
+                            <tr>
+                                <td>{{ forloop.counter }}</td>
+                                <td>{{ i.complaint_title }}</td>
+                                <td>{{ i.complaint_content }}</td>
+                                <td>{{ i.complaint_date }}</td>
+                                <td>
+                                    {% if i.complaint_reply %}
+                                        <span class="badge bg-success">{{ i.complaint_reply }}</span>
+                                    {% else %}
+                                        <span class="badge bg-warning">Pending</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if i.complaint_replydate %}
+                                        {{ i.complaint_replydate }}
+                                    {% else %}
+                                        <span class="text-muted">-</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <p class="text-center text-danger fw-bold">No complaints available.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

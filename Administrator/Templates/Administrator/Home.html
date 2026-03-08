@@ -1,0 +1,212 @@
+{% extends 'Administrator/head.html' %}
+{% load static %}
+{% block content %}
+<style>
+    /* Dashboard specific styling */
+    .metric-card {
+        border-radius: 15px;
+        transition: all 0.3s ease;
+        border: none;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        overflow: hidden;
+        position: relative;
+    }
+
+    .metric-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    .metric-icon-bg {
+        position: absolute;
+        right: -10px;
+        bottom: -20px;
+        font-size: 100px;
+        opacity: 0.1;
+        transform: rotate(-15deg);
+    }
+
+    .card-title-muted {
+        font-weight: 600;
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
+        font-size: 0.85rem;
+    }
+
+    .metric-value {
+        font-size: 2.5rem;
+        font-weight: 700;
+    }
+
+    .chart-container {
+        border-radius: 10px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        border: none;
+        padding: 16px;
+        background: white;
+        margin-top: 0;
+    }
+    .chart-container .card-title { font-size: 0.95rem; margin-bottom: 12px !important; }
+    .chart-wrap { height: 160px; position: relative; }
+</style>
+
+<style>
+    .left-sidebar .sidebar-link,
+    .left-sidebar .sidebar-link span,
+    .left-sidebar .hide-menu {
+        color: #000 !important;
+    }
+    
+    .left-sidebar .sidebar-link:hover {
+        color: #000 !important;
+        background: rgba(0,0,0,0.05);
+    }
+    </style>
+<div class="page-breadcrumb mb-4">
+    <div class="row">
+        <div class="col-7 align-self-center">
+            <h3 class="page-title text-truncate text-dark font-weight-bold mb-1">ElectroBook Dashboard</h3>
+            <div class="d-flex align-items-center">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb m-0 p-0 bg-transparent">
+                        <li class="breadcrumb-item"><a href="{% url 'Admin:homepage' %}" class="text-muted">ElectroBook</a></li>
+                        <li class="breadcrumb-item text-primary" aria-current="page">Dashboard</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container-fluid">
+    <!-- Metrics Row -->
+    <div class="row">
+        <!-- Users Metric -->
+        <div class="col-md-4 mb-4">
+            <div class="card metric-card bg-primary text-white h-100">
+                <div class="card-body">
+                    <h5 class="card-title-muted text-white-50 mb-3">Total Users</h5>
+                    <div class="d-flex align-items-center">
+                        <h2 class="metric-value mb-0 text-white">{{ user_count }}</h2>
+                    </div>
+                    <i data-feather="users" class="metric-icon-bg"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- Electricians Metric -->
+        <div class="col-md-4 mb-4">
+            <div class="card metric-card bg-success text-white h-100">
+                <div class="card-body">
+                    <h5 class="card-title-muted text-white-50 mb-3">Total Electricians</h5>
+                    <div class="d-flex align-items-center">
+                        <h2 class="metric-value mb-0 text-white">{{ electrician_count }}</h2>
+                    </div>
+                    <i data-feather="zap" class="metric-icon-bg"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sellers Metric -->
+        <div class="col-md-4 mb-4">
+            <div class="card metric-card bg-info text-white h-100">
+                <div class="card-body">
+                    <h5 class="card-title-muted text-white-50 mb-3">Total Sellers</h5>
+                    <div class="d-flex align-items-center">
+                        <h2 class="metric-value mb-0 text-white">{{ seller_count }}</h2>
+                    </div>
+                    <i data-feather="shopping-bag" class="metric-icon-bg"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Charts Row - small simple graphs -->
+    <div class="row">
+        <div class="col-md-6 mb-3">
+            <div class="card chart-container">
+                <h5 class="card-title font-weight-bold">Monthly Service Bookings</h5>
+                <div class="chart-wrap">
+                    <canvas id="growthChart" data-labels="{{ growth_labels|default:'[]' }}"
+                        data-values="{{ growth_data|default:'[]' }}"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 mb-3">
+            <div class="card chart-container">
+                <h5 class="card-title font-weight-bold">User Distribution</h5>
+                <div class="chart-wrap">
+                    <canvas id="distributionChart" data-users="{{ user_count|default:'0' }}"
+                        data-electricians="{{ electrician_count|default:'0' }}"
+                        data-sellers="{{ seller_count|default:'0' }}"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Require Chart.js for graphs -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        var growthCanvas = document.getElementById('growthChart');
+        var ctxGrowth = growthCanvas.getContext('2d');
+        var growthLabels = JSON.parse((growthCanvas.dataset.labels || '[]').replace(/'/g, '"'));
+        var growthData = JSON.parse(growthCanvas.dataset.values || '[]');
+
+        new Chart(ctxGrowth, {
+            type: 'line',
+            data: {
+                labels: growthLabels,
+                datasets: [{
+                    label: 'Bookings',
+                    data: growthData,
+                    borderColor: '#5f76e8',
+                    backgroundColor: 'rgba(95, 118, 232, 0.08)',
+                    borderWidth: 2,
+                    pointRadius: 3,
+                    fill: true,
+                    tension: 0.3
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: {
+                    y: { beginAtZero: true, ticks: { maxTicksLimit: 5 }, grid: { drawBorder: false } },
+                    x: { ticks: { maxRotation: 0, font: { size: 10 } }, grid: { display: false } }
+                }
+            }
+        });
+
+        var distCanvas = document.getElementById('distributionChart');
+        var ctxDist = distCanvas.getContext('2d');
+        var uCount = Number(distCanvas.dataset.users || 0);
+        var eCount = Number(distCanvas.dataset.electricians || 0);
+        var sCount = Number(distCanvas.dataset.sellers || 0);
+
+        new Chart(ctxDist, {
+            type: 'doughnut',
+            data: {
+                labels: ['Users', 'Electricians', 'Sellers'],
+                datasets: [{
+                    data: [uCount, eCount, sCount],
+                    backgroundColor: ['#5f76e8', '#22ca80', '#01caf1'],
+                    borderWidth: 0,
+                    hoverOffset: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                cutout: '55%',
+                plugins: {
+                    legend: { position: 'bottom', labels: { padding: 8, font: { size: 11 }, usePointStyle: true } }
+                }
+            }
+        });
+    });
+</script>
+
+{% endblock content %}

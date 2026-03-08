@@ -1,0 +1,38 @@
+{% extends 'Electrician/head.html' %}
+{% load static %}
+{% block content %}
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow border-0 rounded-3 p-4">
+                <h4 class="text-center text-primary mb-4"><i class="bi bi-credit-card me-2"></i>Payment</h4>
+                <p class="text-center fw-bold fs-4 mb-4">Total Amount: ₹{{ total }}</p>
+                <form method="POST">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label class="form-label">Card Number</label>
+                        <input type="text" class="form-control" placeholder="XXXX XXXX XXXX XXXX" maxlength="19" required name="txtacno">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Name</label>
+                        <input type="text" class="form-control" placeholder="Cardholder Name" required name="txtname">
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Expiry (MM/YY)</label>
+                            <input type="text" class="form-control" placeholder="MM/YY" maxlength="5" required name="txtexpdate">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">CVV</label>
+                            <input type="text" class="form-control" placeholder="XXX" maxlength="3" required name="txtccv">
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100 py-2">Make Payment</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

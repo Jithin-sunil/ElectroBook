@@ -1,0 +1,86 @@
+{% extends 'Seller/head.html' %}
+{% load static %}
+{% load mathfilters %}
+{% block content %}
+
+<section class="py-5">
+  <div class="container">
+    <h2 class="fw-bold text-dark mb-4"><i class="bi bi-box-seam me-2"></i>Order Bookings</h2>
+
+    <div class="table-responsive">
+      <table class="table table-bordered align-middle bg-white">
+        {% for booking_id, items in cart.items %}
+        {% with booking=items.0.booking %}
+        <!-- Booking Header -->
+        <tr class="table-light">
+          <td colspan="7" class="py-3">
+            <strong>Order Number:</strong> #{{ booking_id }} &nbsp;|&nbsp;
+            <strong>Date:</strong> {{ booking.booking_date|date:"d M Y" }} &nbsp;|&nbsp;
+            <strong>Total Amount:</strong> ₹{{ booking.booking_amount }} &nbsp;|&nbsp;
+            <strong>Customer:</strong>
+            {% if booking.user %}
+            {{ booking.user.user_name }} · {{ booking.user.user_contact }} · {{ booking.user.user_email }}
+            {% elif booking.electrician %}
+            {{ booking.electrician.electrician_name }} · {{ booking.electrician.electrician_contact }} · {{ booking.electrician.electrician_email }}
+            {% endif %}
+          </td>
+        </tr>
+        <!-- Table Head -->
+        <tr class="table-dark">
+          <th class="text-center">SNO</th>
+          <th>Photo</th>
+          <th>Product Details</th>
+          <th class="text-center">Qty</th>
+          <th class="text-end">Amount</th>
+          <th>Tracking Status</th>
+          <th class="text-center">Action</th>
+        </tr>
+        <!-- Products -->
+        {% for j in items %}
+        <tr>
+          <td class="text-center">{{ forloop.counter }}</td>
+          <td>
+            <img src="{{ j.product.product_photo.url }}" alt="{{ j.product.product_name }}" class="img-thumbnail" style="max-width:100px;height:auto;">
+          </td>
+          <td>
+            <strong>{{ j.product.product_name }}</strong><br>
+            <span class="small text-muted">{{ j.product.product_description }}</span><br>
+            <span class="text-primary">₹{{ j.product.product_price }}</span> per unit
+          </td>
+          <td class="text-center">{{ j.cart_qty }}</td>
+          <td class="text-end">₹{{ j.cart_qty|mul:j.product.product_price }}</td>
+          <td>
+            {% if j.cart_status == 2 %}<span class="badge bg-warning text-dark">Pending</span>{% endif %}
+            {% if j.cart_status == 3 %}<span class="badge bg-info">📦 Packed</span>{% endif %}
+            {% if j.cart_status == 4 %}<span class="badge" style="background:#6f42c1;color:white">🚚 Shipped</span>{% endif %}
+            {% if j.cart_status == 5 %}<span class="badge bg-primary">📍 Out for Delivery</span>{% endif %}
+            {% if j.cart_status == 6 %}<span class="badge bg-success fw-bold">🎉 Delivered</span>{% endif %}
+          </td>
+          <td class="text-center">
+            {% if j.cart_status == 2 %}
+            <a href="{% url 'Seller:packorder' j.id %}" class="btn btn-success btn-sm">Pack</a>
+            {% elif j.cart_status == 3 %}
+            <a href="{% url 'Seller:shiporder' j.id %}" class="btn btn-primary btn-sm">Ship</a>
+            {% elif j.cart_status == 4 %}
+            <a href="{% url 'Seller:outfordelivery' j.id %}" class="btn btn-info btn-sm text-white">Out for Delivery</a>
+            {% elif j.cart_status == 5 %}
+            <a href="{% url 'Seller:delivered' j.id %}" class="btn btn-success btn-sm">Mark Delivered</a>
+            {% else %}
+            —
+            {% endif %}
+          </td>
+        </tr>
+        {% endfor %}
+        {% endwith %}
+
+        {% empty %}
+        <tr>
+          <td colspan="7" class="text-center text-muted py-5">No orders yet.</td>
+        </tr>
+        {% endfor %}
+      </table>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

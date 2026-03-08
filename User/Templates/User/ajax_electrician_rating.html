@@ -1,0 +1,19 @@
+{% for i in data %}
+<div class="card shadow-sm border-0 rounded-3 mb-3">
+    <div class="card-body">
+        <div class="d-flex justify-content-between mb-2">
+            <strong>{{ i.user.user_name }}</strong>
+            <span class="text-muted small">{{ i.datetime|date:"d M Y" }}</span>
+        </div>
+        <div class="mb-2">
+            {% for j in ar %}
+                {% if j <= i.rating_data %}<span class="text-warning">★</span>{% else %}<span class="text-muted">☆</span>{% endif %}
+            {% endfor %}
+            {{ i.rating_data }}/5
+        </div>
+        <p class="mb-0">{{ i.user_review }}</p>
+    </div>
+</div>
+{% empty %}
+<p class="text-muted">No reviews yet.</p>
+{% endfor %}

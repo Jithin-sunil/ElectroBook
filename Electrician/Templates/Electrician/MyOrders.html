@@ -1,0 +1,107 @@
+{% extends 'Electrician/head.html' %}
+{% load static %}
+{% block content %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Orders</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <style>
+        .orders-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            justify-content: center;
+        }
+        .order-card {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 10px;
+            width: 250px;
+            box-shadow: 1px 1px 5px rgba(0,0,0,0.1);
+            text-align: center;
+            background: #fff;
+        }
+        .order-image {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+        .order-title {
+            font-weight: bold;
+            margin-top: 8px;
+            font-size: 14px;
+        }
+        .order-desc {
+            font-size: 12px;
+            color: #666;
+        }
+        .order-price {
+            font-size: 16px;
+            font-weight: bold;
+            color: #28a745;
+        }
+        .action-buttons {
+            margin-top: 8px;
+        }
+        .action-btn {
+            display: inline-block;
+            padding: 6px 10px;
+            margin: 4px;
+            border-radius: 4px;
+            text-decoration: none;
+            font-size: 12px;
+            color: #fff;
+        }
+        .deliver-btn {
+            background: #007bff;
+        }
+        .no-orders {
+            text-align: center;
+            font-size: 18px;
+            font-weight: bold;
+            color: #888;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-4">
+        <h2 class="text-center mb-4">Collected Orders</h2>
+        {% if cart %}
+        <div class="orders-container">
+            {% for i in cart %}
+            <div class="order-card">
+                <img src="{{ i.product.product_photo.url }}" alt="Product Image" class="order-image">
+                <div class="order-title">{{ i.product.product_name }}</div>
+                <div class="order-desc">Ordered by: {{ i.booking.user.user_name }}</div>
+                <div class="order-price">₹{{ i.booking.booking_amount }}</div>
+                <div><strong>Quantity:</strong> {{ i.cart_qty }}</div>
+                <div><strong>Status:</strong>
+                    {% if i.cart_status == 4 %}
+                        <span class="text-success fw-bold">Collected</span>
+                    {% elif i.cart_status == 5 %}
+                        <span class="text-danger fw-bold">Delivered</span>
+                    {% endif %}
+                </div>
+                {% if i.cart_status == 4 %}
+                <div class="action-buttons">
+                    <a href="{% url 'Electrician:delivered' i.id %}" class="action-btn deliver-btn">Deliver</a>
+                </div>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <p class="no-orders">No orders available</p>
+        {% endif %}
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
+
+{% endblock %}

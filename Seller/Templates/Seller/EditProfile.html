@@ -1,0 +1,36 @@
+{% extends 'Seller/head.html' %}
+{% load static %}
+{% block content %}
+
+<section class="py-5">
+  <div class="container">
+    <h2 class="fw-bold text-dark mb-4"><i class="bi bi-pencil me-2"></i>Edit Profile</h2>
+    <div class="row justify-content-center">
+      <div class="col-lg-6">
+        <div class="card eb-card border-0 p-4">
+          <form action="" method="POST">
+            {% csrf_token %}
+            <div class="mb-3">
+              <label for="txt_name" class="form-label fw-bold">Name</label>
+              <input type="text" class="form-control" name="txt_name" id="txt_name" required pattern="^[A-Z]+[a-zA-Z ]*$" title="Name allows only alphabets and spaces, first letter must be capital" value="{{ seller.seller_name }}">
+            </div>
+            <div class="mb-3">
+              <label for="txt_email" class="form-label fw-bold">Email</label>
+              <input type="email" class="form-control" name="txt_email" id="txt_email" required value="{{ seller.seller_email }}">
+            </div>
+            <div class="mb-3">
+              <label for="txt_contact" class="form-label fw-bold">Contact</label>
+              <input type="text" class="form-control" name="txt_contact" id="txt_contact" required pattern="[7-9]{1}[0-9]{9}" title="10-digit mobile number" value="{{ seller.seller_contact }}">
+            </div>
+            <div class="mb-4">
+              <label for="txt_address" class="form-label fw-bold">Address</label>
+              <input type="text" class="form-control" name="txt_address" id="txt_address" required value="{{ seller.seller_address }}">
+            </div>
+            <button type="submit" name="btnsubmit" class="btn btn-primary w-100 py-2">Update Profile</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

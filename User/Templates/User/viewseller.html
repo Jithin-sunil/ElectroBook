@@ -1,0 +1,136 @@
+{% extends 'User/head.html' %}
+{% load static %}
+{% block content %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Sellers</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <style>
+        /* Custom Styling */
+        body {
+            background-color: #f4f4f4;
+        }
+        .card {
+            transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+            border-radius: 12px;
+            overflow: hidden;
+            background: white;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+        }
+        .card img {
+            border-radius: 50%;
+            width: 120px;
+            height: 120px;
+            object-fit: cover;
+        }
+        .search-bar {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        .search-bar select, .search-bar button {
+            border-radius: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container py-4">
+        <h2 class="text-center mb-4 fw-bold text-primary">Find Your Sellers</h2>
+
+        <!-- Search Form -->
+        <div class="search-bar mb-4">
+            <form id="searchForm">
+                {% csrf_token %}
+                <div class="row align-items-center">
+                    <div class="col-md-4">
+                        <label for="district" class="form-label fw-semibold">District</label>
+                        <select name="district" id="district" class="form-select">
+                            <option value="">Select a district</option>
+                            {% for i in district %}
+                            <option value="{{ i.id }}">{{ i.district_name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <label for="place" class="form-label fw-semibold">Place</label>
+                        <select name="place" id="place" class="form-select">
+                            <option value="">--Select place--</option>
+                        </select>
+                    </div>
+                    <div class="col-md-4 text-center">
+                        <button type="button" class="btn btn-primary btn-sm mt-4 px-4" onclick="Search()">Search</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <!-- Sellers List -->
+        <div id="result">
+            <div class="row row-cols-1 row-cols-md-3 g-4">
+                {% for i in seller %}
+                <div class="col">
+                    <div class="card shadow-sm border-0 h-100 p-3">
+                        <a href="{% url 'User:viewproduct' i.id %}" class="text-decoration-none text-dark text-center">
+                            <figure class="text-center p-3">
+                                <img src="{{ i.seller_logo.url }}" class="shadow-lg" alt="logo">
+                            </figure>
+                            <div class="card-body text-center">
+                                <h4 class="fw-bold text-uppercase text-primary">{{ i.seller_name }}</h4>
+                                <p class="text-muted fs-6 m-0"><strong>{{ i.seller_address }}</strong></p>
+                                <p class="text-muted small"><strong>{{ i.place.place_name }}, {{ i.place.district.district_name }}</strong></p>
+                                <p class="text-muted small"><strong>{{ i.seller_contact }}</strong></p>
+                          
+                            </div>
+                        </a>
+                    </div>
+                </div>
+                {% empty %}
+                <div class="col text-center">
+                    <p class="text-danger fs-4">No sellers found for the selected location.</p>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+    </div>
+</body>
+</html>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script>
+    $("#district").change(function () {
+        var pid = $(this).val();
+        var pr = "{% url 'User:ajaxplace' %}";
+        $.ajax({
+            url: pr,
+            data: { pid: pid },
+            success: function (data) {
+                $("#place").html(data);
+            }
+        });
+    });
+
+    function Search() {
+        var district = $("#district").val();
+        var place = $("#place").val();
+        var ur = "{% url 'User:ajaxsellersearch' %}";
+
+        $.ajax({
+            url: ur,
+            data: { district: district, place: place },
+            success: function (data) {
+                $("#result").html(data);
+            }
+        });
+    }
+</script>
+
+{% endblock %}

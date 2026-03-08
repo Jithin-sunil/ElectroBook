@@ -1,0 +1,178 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ElectriBook - Book Electricians & Plumbers | Buy Electrical Items</title>
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+  <link rel="stylesheet" href="{% static 'Main/css/electribook.css' %}">
+  <style>
+    .hero-bg { background: linear-gradient(135deg, #0f172a 0%, #1e3a5f 50%, #0f172a 100%); min-height: 90vh; }
+    .hero-bg-alt { background: linear-gradient(180deg, #f8fafc 0%, #fff 100%); }
+  </style>
+</head>
+<body>
+  <nav class="navbar navbar-expand-lg eb-navbar py-3">
+    <div class="container">
+      <a class="navbar-brand eb-logo" href="{% url 'Guest:index' %}">Electri<span>Book</span></a>
+      <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#ebNav">
+        <i class="bi bi-list fs-3"></i>
+      </button>
+      <div class="collapse navbar-collapse" id="ebNav">
+        <ul class="navbar-nav ms-auto gap-2 flex-wrap">
+          <li><a class="nav-link" href="{% url 'Guest:index' %}">Home</a></li>
+          <li><a class="nav-link" href="{% url 'Guest:login' %}">Login</a></li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">Register</a>
+            <ul class="dropdown-menu dropdown-menu-end border-0 shadow rounded-3 p-2">
+              <li><a class="dropdown-item rounded-2" href="{% url 'Guest:userregistration' %}"><i class="bi bi-person-plus me-2"></i>User</a></li>
+              <li><a class="dropdown-item rounded-2" href="{% url 'Guest:sellerreg' %}"><i class="bi bi-shop me-2"></i>Seller</a></li>
+              <li><a class="dropdown-item rounded-2" href="{% url 'Guest:Electricianreg' %}"><i class="bi bi-tools me-2"></i>Electrician / Plumber</a></li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <section class="hero-bg text-white py-5">
+    <div class="container py-5">
+      <div class="row align-items-center">
+        <div class="col-lg-7">
+          <h1 class="display-4 fw-bold mb-4">Expert Electricians & Plumbers at Your Doorstep</h1>
+          <p class="lead mb-4 opacity-90">Book verified professionals and buy electrical items. One platform for wiring, plumbing, and home electrical needs.</p>
+          <div class="d-flex gap-3 flex-wrap mb-5">
+            <a href="{% url 'Guest:login' %}" class="btn btn-light btn-lg px-4 rounded-pill fw-bold text-dark">
+              <i class="bi bi-box-arrow-in-right me-2"></i>Login
+            </a>
+            <a href="{% url 'Guest:Electricianreg' %}" class="btn btn-outline-light btn-lg px-4 rounded-pill fw-bold">
+              <i class="bi bi-person-plus me-2"></i>Register as Electrician
+            </a>
+          </div>
+          <div class="row g-4 text-center text-lg-start">
+            <div class="col-6 col-md-4">
+              <p class="fs-2 fw-bold mb-0">10k+</p>
+              <p class="small opacity-75 mb-0">Electrical Products</p>
+            </div>
+            <div class="col-6 col-md-4">
+              <p class="fs-2 fw-bold mb-0">50k+</p>
+              <p class="small opacity-75 mb-0">Happy Customers</p>
+            </div>
+            <div class="col-6 col-md-4">
+              <p class="fs-2 fw-bold mb-0">100+</p>
+              <p class="small opacity-75 mb-0">Verified Professionals</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-5 d-none d-lg-block text-center">
+          <i class="bi bi-tools display-1 opacity-50"></i>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="py-5 hero-bg-alt">
+    <div class="container py-4">
+      <div class="text-center mb-5">
+        <h2 class="fw-bold text-dark">Why Choose ElectriBook</h2>
+        <p class="text-muted">Trusted service for your home electrical and plumbing needs</p>
+      </div>
+      <div class="row g-4">
+        <div class="col-md-4">
+          <div class="card eb-card h-100 border-0 p-4">
+            <div class="d-flex align-items-start gap-3">
+              <div class="rounded-circle bg-primary bg-opacity-10 p-3">
+                <i class="bi bi-patch-check-fill text-primary fs-4"></i>
+              </div>
+              <div>
+                <h5 class="fw-bold">Verified Professionals</h5>
+                <p class="text-muted small mb-0">Aadhar & Police verified electricians and plumbers for safe home services.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="card eb-card h-100 border-0 p-4">
+            <div class="d-flex align-items-start gap-3">
+              <div class="rounded-circle bg-success bg-opacity-10 p-3">
+                <i class="bi bi-lightning-charge-fill text-success fs-4"></i>
+              </div>
+              <div>
+                <h5 class="fw-bold">Quality Electrical Items</h5>
+                <p class="text-muted small mb-0">Switches, wires, and components from trusted sellers. Genuine products.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="card eb-card h-100 border-0 p-4">
+            <div class="d-flex align-items-start gap-3">
+              <div class="rounded-circle bg-warning bg-opacity-10 p-3">
+                <i class="bi bi-truck text-warning fs-4"></i>
+              </div>
+              <div>
+                <h5 class="fw-bold">Fast Support</h5>
+                <p class="text-muted small mb-0">Quick estimates and doorstep service. Book & get work done on time.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="eb-footer py-5">
+    <div class="container">
+      <div class="row g-4">
+        <div class="col-lg-4">
+          <div class="eb-logo text-white mb-3">Electri<span>Book</span></div>
+          <p class="small mb-3">Book verified electricians & plumbers. Shop quality electrical items. One platform for your home needs.</p>
+          <div class="d-flex gap-2">
+            <a href="#" class="btn btn-outline-light btn-sm rounded-circle p-2"><i class="bi bi-facebook"></i></a>
+            <a href="#" class="btn btn-outline-light btn-sm rounded-circle p-2"><i class="bi bi-instagram"></i></a>
+            <a href="#" class="btn btn-outline-light btn-sm rounded-circle p-2"><i class="bi bi-twitter-x"></i></a>
+          </div>
+        </div>
+        <div class="col-6 col-lg-2">
+          <h6 class="widget-title">Quick Links</h6>
+          <ul class="list-unstyled">
+            <li><a class="nav-link" href="{% url 'Guest:login' %}">Login</a></li>
+            <li><a class="nav-link" href="{% url 'Guest:userregistration' %}">User Registration</a></li>
+            <li><a class="nav-link" href="{% url 'Guest:sellerreg' %}">Seller Registration</a></li>
+            <li><a class="nav-link" href="{% url 'Guest:Electricianreg' %}">Electrician Registration</a></li>
+          </ul>
+        </div>
+        <div class="col-6 col-lg-2">
+          <h6 class="widget-title">Support</h6>
+          <ul class="list-unstyled">
+            <li><a class="nav-link" href="#">FAQ</a></li>
+            <li><a class="nav-link" href="#">Contact</a></li>
+            <li><a class="nav-link" href="#">Privacy</a></li>
+          </ul>
+        </div>
+        <div class="col-lg-4">
+          <h6 class="widget-title">Newsletter</h6>
+          <p class="small mb-2">Get updates on offers and new services.</p>
+          <form class="d-flex gap-0">
+            <input class="form-control rounded-start" type="email" placeholder="Your email">
+            <button class="btn btn-primary rounded-end px-3" type="submit">Subscribe</button>
+          </form>
+        </div>
+      </div>
+      <hr class="my-4 border-secondary">
+      <div class="row">
+        <div class="col-md-6 text-center text-md-start small">© 2024 ElectriBook. Electrician & Plumber Booking | Electrical Items.</div>
+        <div class="col-md-6 text-center text-md-end small">
+          <a href="#" class="text-secondary text-decoration-none">Terms</a> · <a href="#" class="text-secondary text-decoration-none">Privacy</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

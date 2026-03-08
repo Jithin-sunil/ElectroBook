@@ -1,0 +1,95 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}ElectriBook{% endblock %} - Electrician & Plumber Booking | Electrical Items</title>
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+  <link rel="stylesheet" href="{% static 'Main/css/electribook.css' %}">
+
+</head>
+<body class="bg-light">
+  <nav class="navbar navbar-expand-lg eb-navbar py-3 sticky-top">
+    <div class="container">
+      <a class="navbar-brand eb-logo" href="{% url 'User:userhomepage' %}">Electri<span>Book</span></a>
+      <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#ebNav" aria-controls="ebNav" aria-expanded="false">
+        <i class="bi bi-list fs-3"></i>
+      </button>
+      <div class="collapse navbar-collapse" id="ebNav">
+        <ul class="navbar-nav ms-auto gap-1 flex-wrap">
+          <li><a class="nav-link" href="{% url 'User:userhomepage' %}"><i class="bi bi-house me-1"></i>Home</a></li>
+          <li><a class="nav-link" href="{% url 'User:myprofile' %}"><i class="bi bi-person me-1"></i>Profile</a></li>
+          <li><a class="nav-link" href="{% url 'User:viewseller' %}"><i class="bi bi-shop me-1"></i>Shop</a></li>
+          <li><a class="nav-link" href="{% url 'User:viewelectricians' %}"><i class="bi bi-tools me-1"></i>Find Electrician</a></li>
+          <li><a class="nav-link" href="{% url 'User:myworkbookings' %}"><i class="bi bi-calendar-check me-1"></i>Work Bookings</a></li>
+          <li><a class="nav-link" href="{% url 'User:Mycart' %}"><i class="bi bi-cart3 me-1"></i>Cart</a></li>
+          <li><a class="nav-link" href="{% url 'User:mybooking' %}"><i class="bi bi-box-seam me-1"></i>Orders</a></li>
+          <li><a class="nav-link" href="{% url 'User:feedback' %}"><i class="bi bi-chat-text me-1"></i>Feedback</a></li>
+          <li><a class="nav-link" href="{% url 'User:viewcomplaint' %}"><i class="bi bi-exclamation-circle me-1"></i>Complaints</a></li>
+          <li><a class="nav-link text-danger" href="{% url 'User:logout' %}"><i class="bi bi-box-arrow-right me-1"></i>Logout</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <main class="min-vh-100 pb-5">
+    {% block content %}{% endblock %}
+  </main>
+
+  <footer class="eb-footer py-5 mt-5">
+    <div class="container">
+      <div class="row g-4">
+        <div class="col-lg-4">
+          <div class="eb-logo text-white mb-3">Electri<span>Book</span></div>
+          <p class="small mb-3">Book verified electricians & plumbers. Shop quality electrical items. One platform for your home needs.</p>
+          <div class="d-flex gap-2">
+            <a href="#" class="btn btn-outline-light btn-sm rounded-circle p-2"><i class="bi bi-facebook"></i></a>
+            <a href="#" class="btn btn-outline-light btn-sm rounded-circle p-2"><i class="bi bi-instagram"></i></a>
+            <a href="#" class="btn btn-outline-light btn-sm rounded-circle p-2"><i class="bi bi-twitter-x"></i></a>
+          </div>
+        </div>
+        <div class="col-6 col-lg-2">
+          <h6 class="widget-title">Services</h6>
+          <ul class="list-unstyled">
+            <li><a class="nav-link" href="{% url 'User:viewelectricians' %}">Find Electrician</a></li>
+            <li><a class="nav-link" href="{% url 'User:viewseller' %}">Shop Products</a></li>
+            <li><a class="nav-link" href="#">Track Order</a></li>
+          </ul>
+        </div>
+        <div class="col-6 col-lg-2">
+          <h6 class="widget-title">Support</h6>
+          <ul class="list-unstyled">
+            <li><a class="nav-link" href="#">FAQ</a></li>
+            <li><a class="nav-link" href="#">Contact</a></li>
+            <li><a class="nav-link" href="#">Privacy</a></li>
+          </ul>
+        </div>
+        <div class="col-lg-4">
+          <h6 class="widget-title">Newsletter</h6>
+          <p class="small mb-2">Get updates on offers and new services.</p>
+          <form class="d-flex gap-0">
+            <input class="form-control rounded-start" type="email" placeholder="Your email">
+            <button class="btn btn-primary rounded-end px-3" type="submit">Subscribe</button>
+          </form>
+        </div>
+      </div>
+      <hr class="my-4 border-secondary">
+      <div class="row">
+        <div class="col-md-6 text-center text-md-start small">© 2024 ElectriBook. Electrician & Plumber Booking | Electrical Items.</div>
+        <div class="col-md-6 text-center text-md-end small">
+          <a href="#" class="text-secondary text-decoration-none me-2">Terms</a>
+          <a href="#" class="text-secondary text-decoration-none">Privacy</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="{% static 'Main/js/jquery-1.11.0.min.js' %}"></script>
+  {% block extra_js %}{% endblock %}
+</body>
+</html>

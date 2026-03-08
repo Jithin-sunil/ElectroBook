@@ -1,0 +1,167 @@
+{% extends 'Administrator/head.html' %}
+{% load static %}
+{% block content %}
+
+<style>
+    .admin-card {
+        border-radius: 12px;
+        border: none;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    }
+
+    .admin-card-header {
+        background: linear-gradient(135deg, #5f76e8 0%, #3e5bc4 100%);
+        color: white;
+        border-top-left-radius: 12px;
+        border-top-right-radius: 12px;
+        padding: 15px 20px;
+        font-weight: 600;
+    }
+
+    .table-container {
+        border-radius: 8px;
+        overflow: hidden;
+    }
+
+    .table thead th {
+        background-color: #f8f9fa;
+        border-bottom: 2px solid #eaedf1;
+        color: #4f5467;
+        font-weight: 600;
+        text-transform: uppercase;
+        font-size: 13px;
+        letter-spacing: 0.5px;
+    }
+
+    .table tbody tr {
+        transition: all 0.2s;
+    }
+
+    .table tbody tr:hover {
+        background-color: #f2f4f8;
+    }
+
+    .btn-action {
+        border-radius: 6px;
+        padding: 5px 12px;
+        font-size: 13px;
+        font-weight: 500;
+    }
+</style>
+
+<div class="page-breadcrumb mb-4">
+    <div class="row">
+        <div class="col-12 align-self-center">
+            <h3 class="page-title text-dark font-weight-bold mb-1">Electrician Verification</h3>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb m-0 p-0 bg-transparent">
+                    <li class="breadcrumb-item"><a href="{% url 'Admin:homepage' %}" class="text-muted">Dashboard</a>
+                    </li>
+                    <li class="breadcrumb-item text-primary" aria-current="page">Verification</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+</div>
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="card admin-card">
+                <div class="admin-card-header">
+                    <h4 class="mb-0 text-white"><i data-feather="check-circle" class="feather-icon mr-2"></i>Pending
+                        Electrician Requests</h4>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive table-container">
+                        <table class="table table-hover mb-0">
+                            <thead>
+                                <tr>
+                                    <th class="border-top-0 px-4 py-3">#</th>
+                                    <th class="border-top-0 py-3">Profile Info</th>
+                                    <th class="border-top-0 py-3">Category</th>
+                                    <th class="border-top-0 py-3">Location</th>
+                                    <th class="border-top-0 py-3 text-center">Documents</th>
+                                    <th class="border-top-0 py-3 text-center">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for i in electricians %}
+                                <tr>
+                                    <td class="px-4 py-3 align-middle">{{ forloop.counter }}</td>
+                                    <td class="py-3 align-middle">
+                                        <div class="d-flex align-items-center">
+                                            <img src="{{ i.electrician_photo.url }}" alt="user"
+                                                class="rounded-circle mr-3" width="45" height="45"
+                                                style="object-fit:cover;">
+                                            <div>
+                                                <h5 class="font-weight-medium mb-0 text-dark">{{ i.electrician_name }}
+                                                </h5>
+                                                <span class="text-muted small">{{ i.electrician_email }}</span><br>
+                                                <span class="text-muted small"><i data-feather="phone"
+                                                        style="width: 10px; height: 10px;"></i> {{ i.electrician_contact}}</span>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="py-3 align-middle">
+                                        <span class="badge badge-light px-2 py-1 text-primary">{{i.work_category.work_category_name }}</span>
+                                    </td>
+                                    <td class="py-3 align-middle text-muted">
+                                        {{ i.local_place.place.district.district_name }}, {{i.local_place.place.place_name }}<br>
+                                        <small>{{ i.local_place.local_place_name }} | {{ i.electrician_address}}</small>
+                                    </td>
+                                    <td class="py-3 align-middle text-center">
+                                        <div class="btn-group" role="group">
+                                            <a href="{{ i.electrician_aadhar.url }}" target="_blank"
+                                                class="btn btn-sm btn-light shadow-sm text-info mr-1"
+                                                title="View Aadhar">
+                                                <i data-feather="credit-card" class="feather-icon"
+                                                    style="width: 14px; height: 14px;"></i> Aadhar
+                                            </a>
+                                            <a href="{{ i.electrician_pcc.url }}" target="_blank"
+                                                class="btn btn-sm btn-light shadow-sm text-secondary" title="View PCC">
+                                                <i data-feather="file" class="feather-icon"
+                                                    style="width: 14px; height: 14px;"></i> PCC
+                                            </a>
+                                        </div>
+                                    </td>
+                                    <td class="py-3 align-middle text-center">
+                                        <a href="{% url 'Admin:acceptelectrician' i.id %}"
+                                            class="btn btn-success btn-action mr-1 text-white shadow-sm">
+                                            <i data-feather="check" class="feather-icon"
+                                                style="width: 14px; height: 14px;"></i> Accept
+                                        </a>
+                                        <a href="{% url 'Admin:rejectelectrician' i.id %}"
+                                            class="btn btn-danger btn-action text-white shadow-sm">
+                                            <i data-feather="x" class="feather-icon"
+                                                style="width: 14px; height: 14px;"></i> Reject
+                                        </a>
+                                    </td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="6" class="text-center py-5 text-muted">
+                                        <div class="mb-3"><i data-feather="inbox"
+                                                style="width: 48px; height: 48px; opacity: 0.5;"></i></div>
+                                        No pending electrician verification requests.
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        if (typeof feather !== 'undefined') {
+            feather.replace();
+        }
+    });
+</script>
+
+{% endblock content %}

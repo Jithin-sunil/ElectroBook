@@ -1,0 +1,50 @@
+{% extends 'User/head.html' %}
+
+{% block content %}
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow p-4">
+                <h3 class="text-center mb-3">User Feedback</h3>
+                <form action="" method="POST">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="txt_content" class="form-label fw-bold">Your Feedback:</label>
+                        <input type="text" class="form-control" required name="txt_content" id="txt_content" placeholder="Enter your feedback...">
+                    </div>
+                    <div class="text-center">
+                        <button type="submit" name="btnsubmit" class="btn btn-primary">Submit</button>
+                        <button type="submit" name="btncancel" class="btn btn-secondary">Cancel</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="row justify-content-center mt-5">
+        <div class="col-md-8">
+            <div class="card shadow p-4">
+                <h4 class="text-center mb-3">Feedback List</h4>
+                <table class="table table-bordered table-striped text-center">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>#</th>
+                            <th>Content</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for i in feedback %}
+                        <tr>
+                            <td>{{ forloop.counter }}</td>
+                            <td>{{ i.feedback_name }}</td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="2" class="text-danger">No feedback available.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock %}

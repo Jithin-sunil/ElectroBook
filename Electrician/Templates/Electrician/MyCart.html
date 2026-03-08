@@ -1,0 +1,89 @@
+{% extends 'Electrician/head.html' %}
+{% load static %}
+{% load mathfilters %}
+{% block content %}
+
+<div class="container py-5">
+    <h2 class="fw-bold text-dark mb-4"><i class="bi bi-cart3 me-2"></i>My Cart</h2>
+
+    {% if cartdata %}
+    <form method="POST" id="cartForm" data-qty-url="{% url 'Electrician:cartqty' %}">
+        {% csrf_token %}
+        <div class="table-responsive">
+            <table class="table table-bordered align-middle bg-white">
+                <thead class="table-light">
+                    <tr>
+                        <th>Product</th>
+                        <th class="text-center">Price</th>
+                        <th class="text-center">Qty</th>
+                        <th class="text-end">Total</th>
+                        <th class="text-center">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for i in cartdata %}
+                    <tr>
+                        <td>
+                            <div class="d-flex align-items-center gap-3">
+                                <img src="{{ i.product.product_photo.url }}" alt="{{ i.product.product_name }}" class="rounded" style="width:60px;height:60px;object-fit:cover;">
+                                <div>
+                                    <strong>{{ i.product.product_name }}</strong><br>
+                                    <small class="text-muted">{{ i.product.seller.seller_name }}</small>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="text-center">₹{{ i.product.product_price }}</td>
+                        <td class="text-center">
+                            <input type="number" class="form-control form-control-sm d-inline-block text-center" style="width:70px" value="{{ i.cart_qty }}" min="1" max="{{ i.total_stock }}" data-cart-id="{{ i.id }}">
+                        </td>
+                        <td class="text-end">₹{{ i.cart_qty|mul:i.product.product_price }}</td>
+                        <td class="text-center">
+                            <a href="{% url 'Electrician:delcart' i.id %}" class="btn btn-outline-danger btn-sm"><i class="bi bi-trash"></i> Remove</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div class="d-flex justify-content-between align-items-center mt-4">
+            <a href="{% url 'Electrician:viewseller' %}" class="btn btn-outline-primary">Continue Shopping</a>
+            <div>
+                <strong class="me-3">Grand Total: ₹<span id="cartTotal">0</span></strong>
+                <input type="hidden" name="carttotalamt" id="cartTotalAmt" value="">
+                <button type="submit" class="btn btn-primary">Checkout</button>
+            </div>
+        </div>
+    </form>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        function recalc() {
+            var total = 0;
+            document.querySelectorAll('tbody tr').forEach(function(row) {
+                var price = parseFloat(row.querySelector('td:nth-child(2)').textContent.replace('₹',''));
+                var qty = parseInt(row.querySelector('input[type=number]').value) || 0;
+                total += price * qty;
+            });
+            document.getElementById('cartTotal').textContent = total.toFixed(2);
+            document.getElementById('cartTotalAmt').value = total.toFixed(2);
+        }
+        recalc();
+        document.querySelectorAll('input[data-cart-id]').forEach(function(inp) {
+            inp.addEventListener('change', function() {
+                var url = document.getElementById('cartForm').dataset.qtyUrl;
+                var cartId = this.dataset.cartId;
+                fetch(url + '?QTY=' + this.value + '&ALT=' + cartId).then(function() { location.reload(); });
+            });
+        });
+    });
+    </script>
+    {% else %}
+    <div class="card border-0 shadow-sm p-5 text-center">
+        <i class="bi bi-cart-x display-4 text-muted mb-3"></i>
+        <p class="text-muted mb-3">Your cart is empty.</p>
+        <a href="{% url 'Electrician:viewseller' %}" class="btn btn-primary">Buy Products</a>
+    </div>
+    {% endif %}
+</div>
+
+{% endblock %}

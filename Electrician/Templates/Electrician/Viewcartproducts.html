@@ -1,0 +1,40 @@
+{% extends 'Electrician/head.html' %}
+{% load static %}
+{% block content %}
+
+<div class="container mt-5">
+    <h2 class="text-center text-primary mb-4">Order Details</h2>
+    <div class="row justify-content-center">
+        <div class="col-md-10">
+            <div class="card shadow p-4">
+                <div class="d-flex flex-wrap justify-content-center gap-3">
+                    {% if cart %}
+                    {% for i in cart %}
+                    <div class="card text-center shadow-sm p-3" style="width: 18rem;">
+                        <img src="{{ i.product.product_photo.url }}" alt="Product" class="rounded img-fluid mx-auto d-block" style="height: 100px; width: 100px; object-fit: cover;">
+                        <div class="card-body">
+                            <p class="card-text"><strong>Product:</strong> {{ i.product.product_name }}</p>
+                            <p class="card-text"><strong>Seller:</strong> {{ i.product.seller.seller_name }}</p>
+                            <p class="card-text"><strong>Price:</strong> ₹{{ i.product.product_price }}</p>
+                            <p class="card-text"><strong>Quantity:</strong> {{ i.cart_qty }}</p>
+                            <p class="card-text"><strong>Status:</strong>
+                                {% if i.cart_status == 1 %}<span class="badge bg-warning text-dark">Payment Pending</span>{% endif %}
+                                {% if i.cart_status == 2 %}<span class="badge bg-success">Payment Successful</span>{% endif %}
+                                {% if i.cart_status == 3 %}<span class="badge bg-info">Packed</span>{% endif %}
+                                {% if i.cart_status == 4 %}<span class="badge bg-secondary">Shipped</span>{% endif %}
+                                {% if i.cart_status == 5 %}<span class="badge bg-primary">Out for Delivery</span>{% endif %}
+                                {% if i.cart_status == 6 %}<span class="badge bg-success">Delivered</span>{% endif %}
+                            </p>
+                        </div>
+                    </div>
+                    {% endfor %}
+                    {% else %}
+                    <p class="text-center text-danger fw-bold">No items in this order.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

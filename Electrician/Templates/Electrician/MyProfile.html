@@ -1,0 +1,89 @@
+{% extends 'Electrician/head.html' %}
+{% load static %}
+{% block content %}
+
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-6 mb-4">
+            <div class="card shadow-sm border-0 rounded-3 p-3">
+                <div class="text-center mb-3">
+                    <img src="{{ electrician.electrician_photo.url }}" alt="Profile Photo" class="img-fluid"
+                        style="height: 120px; width: 120px; object-fit: cover; border-radius: 10px;">
+                </div>
+
+                {% if rating_count > 0 %}
+                <div class="text-center mb-3 p-2 bg-light rounded">
+                    <span class="text-warning">★</span> <strong>{{ avg_rating }}</strong>/5 ({{ rating_count }} reviews)
+                </div>
+                {% endif %}
+
+                <table class="table table-borderless table-sm">
+                    <tbody>
+                        <tr>
+                            <th class="text-muted">Name</th>
+                            <td>{{ electrician.electrician_name }}</td>
+                        </tr>
+                        <tr>
+                            <th class="text-muted">Email</th>
+                            <td>{{ electrician.electrician_email }}</td>
+                        </tr>
+                        <tr>
+                            <th class="text-muted">Contact</th>
+                            <td>{{ electrician.electrician_contact }}</td>
+                        </tr>
+                        <tr>
+                            <th class="text-muted">Address</th>
+                            <td>{{ electrician.electrician_address }}</td>
+                        </tr>
+                        <tr>
+                            <th class="text-muted">District</th>
+                            <td>{% if electrician.local_place %}{{ electrician.local_place.place.district.district_name }}{% else %}—{% endif %}</td>
+                        </tr>
+                        <tr>
+                            <th class="text-muted">Place</th>
+                            <td>{% if electrician.local_place %}{{ electrician.local_place.place.place_name }}, {{ electrician.local_place.local_place_name }}{% else %}—{% endif %}</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="d-flex justify-content-between gap-2 mt-3">
+                    <a href="{% url 'Electrician:editprofile' %}" class="btn btn-outline-primary flex-grow-1">Edit Profile</a>
+                    <a href="{% url 'Electrician:changepassword' %}" class="btn btn-outline-danger flex-grow-1">Change Password</a>
+                    <a href="{% url 'Electrician:work_gallery' %}" class="btn btn-primary flex-grow-1">Work Gallery</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            {% if ratings %}
+            <div class="card shadow-sm border-0 rounded-3 p-3 mb-4">
+                <h6 class="fw-bold mb-3">Recent Reviews</h6>
+                {% for r in ratings %}
+                <div class="border-bottom py-2 mb-2">
+                    <span class="text-warning">★</span> {{ r.rating_data }}/5 – {{ r.user_review|truncatewords:15 }}
+                    <small class="text-muted d-block">{{ r.user.user_name }} • {{ r.datetime|date:"d M Y" }}</small>
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            {% if gallery %}
+            <div class="card shadow-sm border-0 rounded-3 p-3">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <h6 class="fw-bold mb-0">Work Gallery</h6>
+                    <a href="{% url 'Electrician:work_gallery' %}" class="btn btn-sm btn-outline-primary">View All</a>
+                </div>
+                <div class="row g-2">
+                    {% for g in gallery|slice:":4" %}
+                    <div class="col-6">
+                        <img src="{{ g.gallery_photo.url }}" class="img-fluid rounded" style="height:90px;object-fit:cover;width:100%;" alt="Work">
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+{% endblock %}

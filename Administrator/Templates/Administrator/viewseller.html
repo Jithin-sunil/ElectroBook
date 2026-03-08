@@ -1,0 +1,232 @@
+{% extends 'Administrator/head.html' %}
+{% load static %}
+{% block content %}
+
+<style>
+    .admin-card {
+        border-radius: 12px;
+        border: none;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    }
+
+    .admin-card-header {
+        border-top-left-radius: 12px;
+        border-top-right-radius: 12px;
+        padding: 15px 20px;
+        font-weight: 600;
+        color: white;
+    }
+
+    .header-success {
+        background: linear-gradient(135deg, #28a745 0%, #208637 100%);
+    }
+
+    .header-danger {
+        background: linear-gradient(135deg, #dc3545 0%, #b02a37 100%);
+    }
+
+    .table-container {
+        overflow: hidden;
+    }
+
+    .table thead th {
+        background-color: #f8f9fa;
+        border-bottom: 2px solid #eaedf1;
+        color: #4f5467;
+        font-weight: 600;
+        text-transform: uppercase;
+        font-size: 13px;
+        letter-spacing: 0.5px;
+    }
+
+    .table tbody tr {
+        transition: all 0.2s;
+    }
+
+    .table tbody tr:hover {
+        background-color: #f2f4f8;
+    }
+
+    .btn-action {
+        border-radius: 6px;
+        padding: 5px 12px;
+        font-size: 13px;
+        font-weight: 500;
+    }
+</style>
+
+<div class="page-breadcrumb mb-4">
+    <div class="row">
+        <div class="col-12 align-self-center">
+            <h3 class="page-title text-dark font-weight-bold mb-1">Seller Management</h3>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb m-0 p-0 bg-transparent">
+                    <li class="breadcrumb-item"><a href="{% url 'Admin:homepage' %}" class="text-muted">Dashboard</a>
+                    </li>
+                    <li class="breadcrumb-item text-primary" aria-current="page">Sellers</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+</div>
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12 mb-4">
+            <!-- Accepted Sellers Table -->
+            <div class="card admin-card">
+                <div class="admin-card-header header-success">
+                    <h4 class="mb-0"><i data-feather="check-square" class="feather-icon mr-2"></i>Accepted Sellers</h4>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive table-container">
+                        {% if aseller %}
+                        <table class="table table-hover mb-0">
+                            <thead>
+                                <tr>
+                                    <th class="border-top-0 px-4 py-3">#</th>
+                                    <th class="border-top-0 py-3">Profile Info</th>
+                                    <th class="border-top-0 py-3">Contact</th>
+                                    <th class="border-top-0 py-3">Location</th>
+                                    <th class="border-top-0 py-3 text-center">Documents</th>
+                                    <th class="border-top-0 py-3 text-center">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for i in aseller %}
+                                <tr>
+                                    <td class="px-4 py-3 align-middle">{{ forloop.counter }}</td>
+                                    <td class="py-3 align-middle">
+                                        <div class="d-flex align-items-center">
+                                            <img src="{{ i.seller_logo.url }}" alt="user" class="rounded-circle mr-3"
+                                                width="45" height="45" style="object-fit:cover;">
+                                            <div>
+                                                <h5 class="font-weight-medium mb-0 text-dark">{{ i.seller_name }}</h5>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="py-3 align-middle text-muted">
+                                        {{ i.seller_email }}<br>
+                                        <i data-feather="phone" class="feather-icon"
+                                            style="width: 12px; height: 12px;"></i> {{ i.seller_contact }}
+                                    </td>
+                                    <td class="py-3 align-middle text-muted">
+                                        {{ i.place.district.district_name }}, {{ i.place.place_name }}<br>
+                                        <small>{{ i.seller_address }}</small>
+                                    </td>
+                                    <td class="py-3 align-middle text-center">
+                                        <a href="{{ i.seller_proof.url }}" target="_blank"
+                                            class="btn btn-sm btn-light shadow-sm text-primary">
+                                            <i data-feather="file-text" class="feather-icon"
+                                                style="width: 14px; height: 14px;"></i> View Proof
+                                        </a>
+                                    </td>
+                                    <td class="py-3 align-middle text-center">
+                                        <a href="{% url 'Admin:rejectseller' i.id %}"
+                                            class="btn btn-danger btn-action text-white shadow-sm"
+                                            onclick="return confirm('Are you sure you want to reject this seller?');">
+                                            <i data-feather="x" class="feather-icon"
+                                                style="width: 14px; height: 14px;"></i> Reject
+                                        </a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                        {% else %}
+                        <div class="text-center py-5 text-muted">
+                            <div class="mb-3"><i data-feather="users"
+                                    style="width: 48px; height: 48px; opacity: 0.5;"></i></div>
+                            <p>No accepted sellers found.</p>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12">
+            <!-- Rejected Sellers Table -->
+            <div class="card admin-card">
+                <div class="admin-card-header header-danger">
+                    <h4 class="mb-0"><i data-feather="x-square" class="feather-icon mr-2"></i>Rejected Sellers</h4>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive table-container">
+                        {% if rseller %}
+                        <table class="table table-hover mb-0">
+                            <thead>
+                                <tr>
+                                    <th class="border-top-0 px-4 py-3">#</th>
+                                    <th class="border-top-0 py-3">Profile Info</th>
+                                    <th class="border-top-0 py-3">Contact</th>
+                                    <th class="border-top-0 py-3">Location</th>
+                                    <th class="border-top-0 py-3 text-center">Documents</th>
+                                    <th class="border-top-0 py-3 text-center">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for i in rseller %}
+                                <tr>
+                                    <td class="px-4 py-3 align-middle">{{ forloop.counter }}</td>
+                                    <td class="py-3 align-middle">
+                                        <div class="d-flex align-items-center">
+                                            <img src="{{ i.seller_logo.url }}" alt="user" class="rounded-circle mr-3"
+                                                width="45" height="45" style="object-fit:cover;">
+                                            <div>
+                                                <h5 class="font-weight-medium mb-0 text-dark">{{ i.seller_name }}</h5>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="py-3 align-middle text-muted">
+                                        {{ i.seller_email }}<br>
+                                        <i data-feather="phone" class="feather-icon"
+                                            style="width: 12px; height: 12px;"></i> {{ i.seller_contact }}
+                                    </td>
+                                    <td class="py-3 align-middle text-muted">
+                                        {{ i.place.district.district_name }}, {{ i.place.place_name }}<br>
+                                        <small>{{ i.seller_address }}</small>
+                                    </td>
+                                    <td class="py-3 align-middle text-center">
+                                        <a href="{{ i.seller_proof.url }}" target="_blank"
+                                            class="btn btn-sm btn-light shadow-sm text-primary">
+                                            <i data-feather="file-text" class="feather-icon"
+                                                style="width: 14px; height: 14px;"></i> View Proof
+                                        </a>
+                                    </td>
+                                    <td class="py-3 align-middle text-center">
+                                        <a href="{% url 'Admin:acceptseller' i.id %}"
+                                            class="btn btn-success btn-action text-white shadow-sm">
+                                            <i data-feather="check" class="feather-icon"
+                                                style="width: 14px; height: 14px;"></i> Accept
+                                        </a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                        {% else %}
+                        <div class="text-center py-5 text-muted">
+                            <div class="mb-3"><i data-feather="slash"
+                                    style="width: 48px; height: 48px; opacity: 0.5;"></i></div>
+                            <p>No rejected sellers found.</p>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        if (typeof feather !== 'undefined') {
+            feather.replace();
+        }
+    });
+</script>
+
+{% endblock content %}

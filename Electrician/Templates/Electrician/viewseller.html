@@ -1,0 +1,81 @@
+{% extends 'Electrician/head.html' %}
+{% load static %}
+{% block content %}
+
+<div class="container py-4">
+    <h2 class="text-center mb-4 fw-bold text-primary">Buy Electrical Products</h2>
+
+    <div class="card shadow-sm border-0 rounded-3 p-4 mb-4">
+        <form id="searchForm">
+            {% csrf_token %}
+            <div class="row align-items-center">
+                <div class="col-md-4">
+                    <label for="district" class="form-label fw-semibold">District</label>
+                    <select name="district" id="district" class="form-select">
+                        <option value="">Select a district</option>
+                        {% for i in district %}
+                        <option value="{{ i.id }}">{{ i.district_name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <label for="place" class="form-label fw-semibold">Place</label>
+                    <select name="place" id="place" class="form-select">
+                        <option value="">Select a place</option>
+                    </select>
+                </div>
+                <div class="col-md-4 text-center">
+                    <button type="button" class="btn btn-primary btn-sm mt-4 px-4" onclick="Search()">Search</button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <div id="result">
+        <div class="row row-cols-1 row-cols-md-3 g-4">
+            {% for i in seller %}
+            <div class="col">
+                <div class="card shadow-sm border-0 h-100 p-3">
+                    <a href="{% url 'Electrician:viewproduct' i.id %}" class="text-decoration-none text-dark text-center">
+                        <figure class="text-center p-3">
+                            <img src="{{ i.seller_logo.url }}" class="shadow-lg rounded-circle" alt="logo" style="width: 120px; height: 120px; object-fit: cover;">
+                        </figure>
+                        <div class="card-body text-center">
+                            <h5 class="fw-bold text-uppercase text-primary">{{ i.seller_name }}</h5>
+                            <p class="text-muted fs-6 m-0">{{ i.seller_address }}</p>
+                            <p class="text-muted small"><strong>{{ i.place.place_name }}, {{ i.place.district.district_name }}</strong></p>
+                            <p class="text-muted small">{{ i.seller_contact }}</p>
+                        </div>
+                    </a>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col text-center">
+                <p class="text-danger fs-4">No sellers found.</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script>
+$("#district").change(function() {
+    var pid = $(this).val();
+    $.ajax({
+        url: "{% url 'Electrician:ajaxplace' %}",
+        data: { pid: pid },
+        success: function(data) { $("#place").html(data); }
+    });
+});
+function Search() {
+    var district = $("#district").val();
+    var place = $("#place").val();
+    $.ajax({
+        url: "{% url 'Electrician:ajaxsellersearch' %}",
+        data: { district: district, place: place },
+        success: function(data) { $("#result").html(data); }
+    });
+}
+</script>
+{% endblock %}

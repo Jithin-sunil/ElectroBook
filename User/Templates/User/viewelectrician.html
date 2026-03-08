@@ -1,0 +1,74 @@
+{% extends 'User/head.html' %}
+{% load static %}
+
+{% block content %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Delivery Agent Details</title>
+    <style>
+        body {
+            background-color: #f4f7fa;
+            font-family: Arial, sans-serif;
+        }
+        .card {
+            width: 350px;
+            border: 1px solid #ddd;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+            background: #fff;
+            margin: 50px auto;
+            transition: transform 0.2s;
+        }
+        .card:hover {
+            transform: scale(1.05);
+        }
+        .card img {
+            border-radius: 50%;
+            width: 120px;
+            height: 120px;
+            object-fit: cover;
+            margin-bottom: 20px;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .card h3 {
+            margin: 15px 0;
+            font-size: 22px;
+            font-weight: bold;
+            color: #333;
+        }
+        .card p {
+            margin: 8px 0;
+            font-size: 16px;
+            color: #555;
+        }
+        .card p strong {
+            color: #007bff;
+        }
+        .card .info {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <img src="{{ delivery.electrician_photo.url }}" alt="Agent Photo">
+        <h3>{{ delivery.electrician_name }}</h3>
+        <div class="info">
+            <p><strong>Email:</strong> {{ delivery.electrician_email }}</p>
+            <p><strong>Contact:</strong> {{ delivery.electrician_contact }}</p>
+            <p><strong>District:</strong> {% if delivery.local_place %}{{ delivery.local_place.place.district.district_name }}{% else %}—{% endif %}</p>
+            <p><strong>Place:</strong> {% if delivery.local_place %}{{ delivery.local_place.place.place_name }}, {{ delivery.local_place.local_place_name }}{% else %}—{% endif %}</p>
+        </div>
+    </div>
+</body>
+</html>
+
+{% endblock %}

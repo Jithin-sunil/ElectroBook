@@ -1,0 +1,50 @@
+{% extends 'Seller/head.html' %}
+{% load static %}
+{% block content %}
+
+<section class="py-5">
+  <div class="container">
+    <h2 class="fw-bold text-dark mb-4"><i class="bi bi-person me-2"></i>My Profile</h2>
+    <div class="row justify-content-center">
+      <div class="col-lg-8">
+        <div class="card eb-card border-0 overflow-hidden">
+          <div class="p-4 text-center" style="background: linear-gradient(135deg, #0f172a 0%, #1e3a5f 100%);">
+            <img src="{{ seller.seller_logo.url }}" alt="Logo" class="rounded-circle border border-3 border-white shadow" style="width:100px;height:100px;object-fit:cover;">
+            <h4 class="text-white fw-bold mt-3 mb-0">{{ seller.seller_name }}</h4>
+            <p class="text-white-50 small">{{ seller.place.place_name }}, {{ seller.place.district.district_name }}</p>
+          </div>
+          <div class="card-body p-4">
+            <table class="table table-borderless mb-0">
+              <tr>
+                <td class="text-muted py-2" style="width:140px;"><i class="bi bi-envelope me-2 text-primary"></i>Email</td>
+                <td class="fw-medium">{{ seller.seller_email }}</td>
+              </tr>
+              <tr>
+                <td class="text-muted py-2"><i class="bi bi-telephone me-2 text-primary"></i>Contact</td>
+                <td class="fw-medium">{{ seller.seller_contact }}</td>
+              </tr>
+              <tr>
+                <td class="text-muted py-2"><i class="bi bi-geo-alt me-2 text-primary"></i>Address</td>
+                <td class="fw-medium">{{ seller.seller_address }}</td>
+              </tr>
+              <tr>
+                <td class="text-muted py-2"><i class="bi bi-pin-map me-2 text-primary"></i>District</td>
+                <td class="fw-medium">{{ seller.place.district.district_name }}</td>
+              </tr>
+              <tr>
+                <td class="text-muted py-2"><i class="bi bi-buildings me-2 text-primary"></i>Place</td>
+                <td class="fw-medium">{{ seller.place.place_name }}</td>
+              </tr>
+            </table>
+            <hr class="my-4">
+            <div class="d-flex gap-2 flex-wrap">
+              <a href="{% url 'Seller:editprofile' %}" class="btn btn-primary"><i class="bi bi-pencil me-2"></i>Edit Profile</a>
+              <a href="{% url 'Seller:changepassword' %}" class="btn btn-outline-secondary"><i class="bi bi-key me-2"></i>Change Password</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

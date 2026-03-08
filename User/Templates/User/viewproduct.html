@@ -1,0 +1,175 @@
+{% extends 'User/head.html' %}
+{% load static %}
+{% block content %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Search</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
+        integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <style>
+        .text-warning {
+            color: orange;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container-lg py-4">
+        <!-- Search Form -->
+        <form id="searchForm">
+            {% csrf_token %}
+
+
+        
+
+
+            <div class="row mb-3">
+                <div class="col-md-4">
+                    <label for="category" class="form-label">Category</label>
+                    <select name="category" id="category" class="form-control">
+                        <option value="">Select a Category</option>
+                        {% for i in category %}
+                        <option value="{{ i.id }}">{{ i.category_name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <label for="subcategory" class="form-label">Subcategory</label>
+                    <select name="subcategory" id="subcategory" class="form-control">
+                        <option value="">--Select Subcategory--</option>
+                    </select>
+                </div>
+                <div class="col-md-4 d-flex align-items-end">
+                    <button type="button" class="btn btn-primary" onclick="Search()">Search</button>
+                </div>
+            </div>
+        </form>
+
+
+
+        <!-- Search Results -->
+        <div id="result">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="product-grid row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-3 row-cols-xl-4 row-cols-xxl-5">
+                        {% for i, j in product %}
+                        <div class="col">
+                            <div class="product-item">
+                                <figure>
+                                    <img src="{{ i.product_photo.url }}" alt="{{ i.product_name }}" class="tab-image" style="width: 100%; height: 200px; object-fit: cover;">
+                                </figure>
+                                <div class="d-flex flex-column text-center">
+                                    <h3 class="fs-6 fw-normal">{{ i.product_name }}</h3>
+                                    <p class="text-muted small m-0">{{ i.product_description }}</p>
+                                    <p class="text-muted small m-0">
+                                        <strong>Category:</strong> {{ i.subcategory.category.category_name }} <br>
+                                        <strong>Subcategory:</strong> {{ i.subcategory.subcategory_name }}
+                                    </p>
+                                    <div>
+                                        <span class="rating">
+                                            {% for k in ar %}
+                                                {% if k <= j %}
+                                                    <i class="fa-solid fa-star text-warning"></i>
+                                                {% else %}
+                                                    <i class="fa-solid fa-star star-light"></i>
+                                                {% endif %}
+                                            {% endfor %}
+                                        </span>
+                                        <span>({{ j }})</span>
+                                    </div>
+                                    <div class="d-flex justify-content-center align-items-center gap-2">
+                                        {% if i.discount_price %}
+                                            <del>₹{{ i.product_price }}</del>
+                                            <span class="text-dark fw-semibold">₹{{ i.discount_price }}</span>
+                                            <span class="badge border border-dark-subtle rounded-0 fw-normal px-1 fs-7 lh-1 text-body-tertiary">{{ i.discount_percentage }}% OFF</span>
+                                        {% else %}
+                                            <span class="text-dark fw-semibold">₹{{ i.product_price }}</span>
+                                        {% endif %}
+                                    </div>
+                                    <div class="button-area p-3 pt-0">
+                                        <div class="row g-1 mt-2">
+                                            <div class="col-3">
+                                                 </div>
+                                            <div class="col-7">
+                                                {% if i.total_stock <= 0 %}
+                                                    <span class="text-danger fw-bold">Out Of Stock</span>
+                                                {% else %}
+                                                    <a href="{% url 'User:Addcart' i.id %}" class="btn btn-primary rounded-1 p-2 fs-7 btn-cart">
+                                                        <i class="fa-solid fa-cart-plus"></i> Add to Cart
+                                                    </a>
+                                                {% endif %}
+                                            </div>
+                                            
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+  
+</body>
+
+</html>
+
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script>
+
+
+
+  
+
+    $(document).ready(function () {
+        // Load subcategories when category changes
+        $("#category").change(function () {
+            var did = $(this).val();
+            var ur = "{% url 'User:ajaxsubcategory' %}";
+
+            $.ajax({
+                url: ur,
+                data: { did: did },
+                success: function (data) {
+                    $("#subcategory").html(data);
+                }
+            });
+        });
+    });
+
+    
+
+    function Search() {
+    var seller_id = "{{ seller_id }}";  // Ensure seller ID is passed
+    var category_id = $("#category").val();
+    var subcategory_id = $("#subcategory").val();
+    var ur = "{% url 'User:ajaxsearch' %}";
+
+    $.ajax({
+        url: ur,
+        data: { 
+            seller_id: seller_id,  // Ensure filtering by seller
+            cid: category_id, 
+            sid: subcategory_id 
+        },
+        success: function (data) {
+            $("#result").html(data);
+        }
+    });
+}
+
+
+</script>
+
+{% endblock content %}

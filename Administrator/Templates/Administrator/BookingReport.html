@@ -1,0 +1,204 @@
+{% extends 'Administrator/head.html' %}
+{% load static %}
+{% block content %}
+
+<style>
+    .admin-card {
+        border-radius: 12px;
+        border: none;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    }
+
+    .admin-card-header {
+        background: linear-gradient(135deg, #5f76e8 0%, #3e5bc4 100%);
+        border-top-left-radius: 12px;
+        border-top-right-radius: 12px;
+        padding: 15px 20px;
+        font-weight: 600;
+        color: white;
+    }
+
+    .table-container {
+        overflow: hidden;
+    }
+
+    .table thead th {
+        background-color: #f8f9fa;
+        border-bottom: 2px solid #eaedf1;
+        color: #4f5467;
+        font-weight: 600;
+        text-transform: uppercase;
+        font-size: 13px;
+        letter-spacing: 0.5px;
+    }
+
+    .table tbody tr {
+        transition: all 0.2s;
+    }
+
+    .table tbody tr:hover {
+        background-color: #f2f4f8;
+    }
+
+    .btn-submit {
+        background-color: #5f76e8;
+        border-color: #5f76e8;
+        border-radius: 8px;
+        padding: 10px 20px;
+        font-weight: 500;
+    }
+
+    .btn-submit:hover {
+        background-color: #4b62d3;
+        border-color: #4b62d3;
+    }
+
+    .form-control {
+        border-radius: 8px;
+        border-color: #e3e6f0;
+    }
+
+    .form-control:focus {
+        box-shadow: 0 0 0 0.2rem rgba(95, 118, 232, 0.15);
+        border-color: #5f76e8;
+    }
+</style>
+
+<div class="page-breadcrumb mb-4">
+    <div class="row">
+        <div class="col-12 align-self-center">
+            <h3 class="page-title text-dark font-weight-bold mb-1">Sales Report</h3>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb m-0 p-0 bg-transparent">
+                    <li class="breadcrumb-item"><a href="{% url 'Admin:homepage' %}" class="text-muted">Dashboard</a>
+                    </li>
+                    <li class="breadcrumb-item text-primary" aria-current="page">Reports</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+</div>
+
+<div class="container-fluid">
+    <div class="row justify-content-center">
+        <div class="col-md-12">
+            <div class="card admin-card mb-4">
+                <div class="admin-card-header">
+                    <h4 class="mb-0"><i data-feather="calendar" class="feather-icon mr-2"></i>Filter Date Range</h4>
+                </div>
+                <div class="card-body">
+                    <form action="" method="POST">
+                        {% csrf_token %}
+                        <div class="row align-items-end">
+                            <div class="col-md-4 mb-3">
+                                <label for="txt_fromdate" class="form-label font-weight-bold text-dark">From
+                                    Date</label>
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text bg-white border-right-0"
+                                            style="border-radius: 8px 0 0 8px;">
+                                            <i data-feather="calendar" style="width: 16px; height: 16px;"></i>
+                                        </span>
+                                    </div>
+                                    <input type="date" required name="txt_fromdate" id="txt_fromdate"
+                                        class="form-control border-left-0">
+                                </div>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label for="txt_todate" class="form-label font-weight-bold text-dark">To Date</label>
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text bg-white border-right-0"
+                                            style="border-radius: 8px 0 0 8px;">
+                                            <i data-feather="calendar" style="width: 16px; height: 16px;"></i>
+                                        </span>
+                                    </div>
+                                    <input type="date" required name="txt_todate" id="txt_todate"
+                                        class="form-control border-left-0">
+                                </div>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <button type="submit" name="btnsubmit"
+                                    class="btn btn-submit btn-block text-white shadow-sm">
+                                    <i data-feather="filter" class="feather-icon mr-1"
+                                        style="width: 16px; height: 16px;"></i> Generate Report
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            {% if request.POST %}
+            <div class="card admin-card">
+                <div class="card-body p-0">
+                    <div class="table-responsive table-container">
+                        {% if cart %}
+                        <table class="table table-hover mb-0">
+                            <thead>
+                                <tr>
+                                    <th class="border-top-0 px-4 py-3">#</th>
+                                    <th class="border-top-0 py-3">Customer Info</th>
+                                    <th class="border-top-0 py-3">Contact Details</th>
+                                    <th class="border-top-0 py-3">Product Name</th>
+                                    <th class="border-top-0 py-3 text-center">Photo</th>
+                                    <th class="border-top-0 py-3 text-center">Amount</th>
+                                    <th class="border-top-0 py-3 text-center">Qty</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for i in cart %}
+                                <tr>
+                                    <td class="px-4 py-3 align-middle">{{ forloop.counter }}</td>
+                                    <td class="py-3 align-middle">
+                                        <div class="font-weight-medium text-dark">{{ i.booking.user.user_name }}</div>
+                                    </td>
+                                    <td class="py-3 align-middle text-muted">
+                                        {{ i.booking.user.user_email }}<br>
+                                        <small><i data-feather="phone" style="width: 10px; height: 10px;"></i> {{
+                                            i.booking.user.user_contact }}</small><br>
+                                        <small>{{ i.booking.user.user_address }}</small>
+                                    </td>
+                                    <td class="py-3 align-middle font-weight-medium text-dark">
+                                        {{ i.product.product_name }}
+                                    </td>
+                                    <td class="py-3 align-middle text-center">
+                                        <img src="{{ i.product.product_photo.url }}" alt="product"
+                                            class="rounded border"
+                                            style="height: 50px; width: 50px; object-fit: cover;">
+                                    </td>
+                                    <td class="py-3 align-middle text-center text-success font-weight-bold">
+                                        ${{ i.booking.booking_amount }}
+                                    </td>
+                                    <td class="py-3 align-middle text-center">
+                                        <span class="badge badge-light px-2 py-1 text-dark border">{{ i.cart_qty
+                                            }}</span>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                        {% else %}
+                        <div class="text-center py-5 text-muted">
+                            <div class="mb-3"><i data-feather="folder-minus"
+                                    style="width: 48px; height: 48px; opacity: 0.5;"></i></div>
+                            <p>No sales data found for the selected date range.</p>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        if (typeof feather !== 'undefined') {
+            feather.replace();
+        }
+    });
+</script>
+
+{% endblock content %}

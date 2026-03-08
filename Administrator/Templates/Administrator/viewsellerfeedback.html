@@ -1,0 +1,129 @@
+{% extends 'Administrator/head.html' %}
+{% load static %}
+{% block content %}
+
+<style>
+    .admin-card {
+        border-radius: 12px;
+        border: none;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    }
+
+    .admin-card-header {
+        background: linear-gradient(135deg, #17a2b8 0%, #117a8b 100%);
+        border-top-left-radius: 12px;
+        border-top-right-radius: 12px;
+        padding: 15px 20px;
+        font-weight: 600;
+        color: white;
+    }
+
+    .table-container {
+        overflow: hidden;
+    }
+
+    .table thead th {
+        background-color: #f8f9fa;
+        border-bottom: 2px solid #eaedf1;
+        color: #4f5467;
+        font-weight: 600;
+        text-transform: uppercase;
+        font-size: 13px;
+        letter-spacing: 0.5px;
+    }
+
+    .table tbody tr {
+        transition: all 0.2s;
+    }
+
+    .table tbody tr:hover {
+        background-color: #f2f4f8;
+    }
+
+    .feedback-content {
+        background-color: #f8f9fa;
+        border-radius: 8px;
+        padding: 12px;
+        font-style: italic;
+        color: #555;
+        border-left: 4px solid #17a2b8;
+    }
+</style>
+
+<div class="page-breadcrumb mb-4">
+    <div class="row">
+        <div class="col-12 align-self-center">
+            <h3 class="page-title text-dark font-weight-bold mb-1">Seller Feedback</h3>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb m-0 p-0 bg-transparent">
+                    <li class="breadcrumb-item"><a href="{% url 'Admin:homepage' %}" class="text-muted">Dashboard</a>
+                    </li>
+                    <li class="breadcrumb-item text-primary" aria-current="page">Seller Feedback</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+</div>
+
+<div class="container-fluid">
+    <div class="row justify-content-center">
+        <div class="col-md-10">
+            <div class="card admin-card">
+                <div class="admin-card-header">
+                    <h4 class="mb-0"><i data-feather="message-circle" class="feather-icon mr-2"></i>Feedback from
+                        Sellers</h4>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive table-container">
+                        {% if feedback %}
+                        <table class="table table-hover mb-0">
+                            <thead>
+                                <tr>
+                                    <th class="border-top-0 px-4 py-3" style="width: 10%;">#</th>
+                                    <th class="border-top-0 py-3" style="width: 25%;">Seller Information</th>
+                                    <th class="border-top-0 py-3" style="width: 65%;">Feedback Content</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for i in feedback %}
+                                <tr>
+                                    <td class="px-4 py-3 align-middle">{{ forloop.counter }}</td>
+                                    <td class="py-3 align-middle font-weight-medium text-dark">
+                                        <div class="d-flex align-items-center">
+                                            <div class="bg-light rounded-circle d-flex align-items-center justify-content-center mr-3"
+                                                style="width: 40px; height: 40px;">
+                                                <i data-feather="briefcase" class="feather-icon text-info"></i>
+                                            </div>
+                                            {{ i.seller.seller_name }}
+                                        </div>
+                                    </td>
+                                    <td class="py-3 align-middle">
+                                        <div class="feedback-content">{{ i.feedback_name }}</div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                        {% else %}
+                        <div class="text-center py-5 text-muted">
+                            <div class="mb-3"><i data-feather="inbox"
+                                    style="width: 48px; height: 48px; opacity: 0.5;"></i></div>
+                            <p>No seller feedback received yet.</p>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        if (typeof feather !== 'undefined') {
+            feather.replace();
+        }
+    });
+</script>
+
+{% endblock content %}

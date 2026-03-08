@@ -1,0 +1,80 @@
+
+{% extends 'Electrician/head.html' %}
+{% load static %}
+{% block content %}
+
+<section style="background: linear-gradient(135deg, #1e3a5f 0%, #2d5a87 100%); min-height: 320px; border-radius: 12px; margin: 20px;">
+  <div class="container-lg py-5">
+    <div class="row align-items-center">
+      <div class="col-lg-7 pt-4">
+        <h2 class="display-5 fw-bold text-white ls-1">Electrician & Plumber Dashboard</h2>
+        <p class="fs-5 text-white-50">Manage your work bookings, upload gallery, and shop electrical items.</p>
+        <div class="row mt-4 text-white">
+          <div class="col-md-4">
+            <p class="fs-2 fw-bold mb-0">My Bookings</p>
+            <p class="text-white-50 small mb-0">View & manage work requests</p>
+          </div>
+          <div class="col-md-4">
+            <p class="fs-2 fw-bold mb-0">Work Gallery</p>
+            <p class="text-white-50 small mb-0">Showcase your projects</p>
+          </div>
+          <div class="col-md-4">
+            <p class="fs-2 fw-bold mb-0">Shop</p>
+            <p class="text-white-50 small mb-0">Buy electrical items</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="row row-cols-1 row-cols-md-3 g-4 mt-3">
+      <div class="col">
+        <a href="{% url 'Electrician:my_bookings' %}" class="text-decoration-none">
+          <div class="card border-0 bg-primary rounded-3 p-4 text-white h-100 shadow-sm">
+            <div class="d-flex align-items-center gap-3">
+              <i class="bi bi-calendar-check fs-1 text-white"></i>
+              <div>
+                <h5 class="fw-bold mb-1">My Bookings</h5>
+                <p class="small mb-0 opacity-90">Accept, reject, send estimates</p>
+              </div>
+            </div>
+          </div>
+        </a>
+      </div>
+      <div class="col">
+        <a href="{% url 'Electrician:work_gallery' %}" class="text-decoration-none">
+          <div class="card border-0 bg-success rounded-3 p-4 text-white h-100 shadow-sm">
+            <div class="d-flex align-items-center gap-3">
+              <i class="bi bi-images fs-1 text-white"></i>
+              <div>
+                <h5 class="fw-bold mb-1">Work Gallery</h5>
+                <p class="small mb-0 opacity-90">Upload your project photos</p>
+              </div>
+            </div>
+          </div>
+        </a>
+      </div>
+      <div class="col">
+        <a href="{% url 'Electrician:viewseller' %}" class="text-decoration-none">
+          <div class="card border-0 bg-warning text-dark rounded-3 p-4 h-100 shadow-sm">
+            <div class="d-flex align-items-center gap-3">
+              <i class="bi bi-cart3 fs-1"></i>
+              <div>
+                <h5 class="fw-bold mb-1">Shop Products</h5>
+                <p class="small mb-0">Buy electrical items</p>
+              </div>
+            </div>
+          </div>
+        </a>
+      </div>
+    </div>
+  
+  </div>
+</section>
+
+
+
+{% endblock content %}
+
+
+
+

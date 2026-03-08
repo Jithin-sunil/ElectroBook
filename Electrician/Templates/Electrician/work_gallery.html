@@ -1,0 +1,47 @@
+{% extends 'Electrician/head.html' %}
+{% load static %}
+{% block content %}
+
+<div class="container mt-4">
+    <h4 class="mb-4">My Work Gallery</h4>
+    
+    <div class="card shadow-sm rounded-3 mb-4">
+        <div class="card-body">
+            <h5 class="mb-3">Upload New Photo</h5>
+            <form method="POST" enctype="multipart/form-data" class="row g-3">
+                {% csrf_token %}
+                <div class="col-md-6">
+                    <label for="gallery_photo" class="form-label">Photo</label>
+                    <input type="file" name="gallery_photo" id="gallery_photo" class="form-control" accept="image/*" required>
+                </div>
+                <div class="col-md-4">
+                    <label for="caption" class="form-label">Caption (optional)</label>
+                    <input type="text" name="caption" id="caption" class="form-control" placeholder="Brief description">
+                </div>
+                <div class="col-md-2 d-flex align-items-end">
+                    <button type="submit" class="btn btn-primary w-100">Upload</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="row row-cols-2 row-cols-md-4 g-4">
+        {% for g in gallery %}
+        <div class="col">
+            <div class="card shadow-sm border-0 rounded-3 overflow-hidden h-100">
+                <img src="{{ g.gallery_photo.url }}" class="card-img-top" style="height:180px;object-fit:cover;" alt="Gallery">
+                <div class="card-body p-2">
+                    {% if g.caption %}<p class="small mb-0 text-muted">{{ g.caption }}</p>{% endif %}
+                    <small class="text-muted">{{ g.uploaded_at|date:"d M Y" }}</small>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12 text-center py-5 text-muted">
+            <p>No photos in your gallery yet. Upload your first work photo above.</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+{% endblock %}

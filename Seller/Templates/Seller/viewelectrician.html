@@ -1,0 +1,28 @@
+{% extends 'Seller/head.html' %}
+{% load static %}
+{% block content %}
+
+<section class="py-5">
+  <div class="container">
+    <h2 class="fw-bold text-dark mb-4"><i class="bi bi-person-badge me-2"></i>Electrician Details</h2>
+    <div class="row justify-content-center">
+      <div class="col-lg-5">
+        <div class="card eb-card border-0 overflow-hidden text-center">
+          <div class="p-4" style="background: linear-gradient(135deg, #0f172a 0%, #1e3a5f 100%);">
+            <img src="{{ delivery.electrician_photo.url }}" alt="{{ delivery.electrician_name }}" class="rounded-circle border border-3 border-white shadow" style="width:120px;height:120px;object-fit:cover;">
+            <h4 class="text-white fw-bold mt-3 mb-0">{{ delivery.electrician_name }}</h4>
+          </div>
+          <div class="card-body p-4">
+            <div class="text-start">
+              <p class="mb-3"><i class="bi bi-envelope text-primary me-2"></i><strong>Email:</strong> {{ delivery.electrician_email }}</p>
+              <p class="mb-3"><i class="bi bi-telephone text-primary me-2"></i><strong>Contact:</strong> {{ delivery.electrician_contact }}</p>
+              <p class="mb-3"><i class="bi bi-pin-map text-primary me-2"></i><strong>District:</strong> {% if delivery.local_place %}{{ delivery.local_place.place.district.district_name }}{% else %}—{% endif %}</p>
+              <p class="mb-0"><i class="bi bi-geo-alt text-primary me-2"></i><strong>Place:</strong> {% if delivery.local_place %}{{ delivery.local_place.place.place_name }}, {{ delivery.local_place.local_place_name }}{% else %}—{% endif %}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}
