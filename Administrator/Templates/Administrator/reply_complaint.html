@@ -1,0 +1,21 @@
+{% extends 'Administrator/head.html' %}
+{% block content %}
+<div class="container-fluid mt-4">
+    <h3 class="mb-4">Reply to Complaint</h3>
+    <div class="card p-4 mb-4">
+        <h5 class="card-title">{{ complaint.complaint_title }}</h5>
+        <p class="mb-1"><strong>User:</strong> {{ complaint.user.user_name }}</p>
+        <p class="mb-1"><strong>Date:</strong> {{ complaint.complaint_date|date:"d M Y H:i" }}</p>
+        <p class="mb-3"><strong>Complaint:</strong><br>{{ complaint.complaint_content }}</p>
+    </div>
+    <form method="POST">
+        {% csrf_token %}
+        <div class="mb-3">
+            <label for="reply" class="form-label">Your Reply</label>
+            <textarea class="form-control" id="reply" name="reply" rows="5" required></textarea>
+        </div>
+        <button type="submit" class="btn btn-success">Send Reply</button>
+        <a href="{% url 'Admin:view_complaints' %}" class="btn btn-secondary ms-2">Cancel</a>
+    </form>
+</div>
+{% endblock %}

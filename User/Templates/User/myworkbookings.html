@@ -13,6 +13,8 @@
                     <th>Booked On</th>
                     <th>Work Date</th>
                     <th>Work Details</th>
+                    <th>Work Location</th>
+                    <th>Work File</th>
                     <th>Status</th>
                     <th>Estimate Amount</th>
                     <th>Action</th>
@@ -27,6 +29,13 @@
                     <td>{{ b.booking_date|date:"M d, Y" }}</td>
                     <td class="text-primary fw-bold">{{ b.work_date }}</td>
                     <td>{{ b.work_details }}</td>
+                    <td>{{ b.work_location }}</td>
+                    <td>
+                        {% if b.work_file %}
+                        <a href="{{ b.work_file.url }}" target="_blank" class="btn btn-sm btn-outline-secondary">View File</a>
+                        {% else %}
+                        <span class="text-muted">No File Uploaded</span>
+                        {% endif %}
                     <td>
                         {% if b.booking_status == 0 %}
                         <span class="badge bg-warning text-dark">Pending</span>
@@ -35,9 +44,13 @@
                         {% elif b.booking_status == 2 %}
                         <span class="badge bg-danger">Rejected</span>
                         {% elif b.booking_status == 3 %}
-                        <span class="badge bg-info text-dark">Work Estimated</span>
+                        <span class="badge bg-info text-dark">Estimate Received</span>
                         {% elif b.booking_status == 4 %}
                         <span class="badge bg-primary">Completed/Paid</span>
+                        {% elif b.booking_status == 5 %}
+                        <span class="badge bg-secondary">Estimate Rejected</span>
+                        {% elif b.booking_status == 6 %}
+                        <span class="badge bg-warning text-dark">Work in Progress</span>
                         {% endif %}
                     </td>
                     <td>
@@ -49,13 +62,18 @@
                     </td>
                     <td>
                         {% if b.booking_status == 3 %}
-                        <a href="{% url 'User:pay_estimate' b.id %}" class="btn btn-sm btn-success">Pay Estimate</a>
+                        <a href="{% url 'User:pay_estimate' b.id %}" class="btn btn-sm btn-success">Review Estimate</a>
                         {% elif b.booking_status == 4 %}
-                        <a href="{% url 'User:electrician_rating' b.electrician.id %}" class="btn btn-sm btn-warning"><i class="bi bi-star-fill me-1"></i>Rate Electrician</a>
+                        <a href="{% url 'User:electrician_rating' b.electrician.id %}" class="btn btn-sm btn-warning me-2"><i class="bi bi-star-fill me-1"></i>Rate Electrician</a>
+                        <a href="{% url 'User:complaint_electrician' b.electrician.id %}" class="btn btn-sm btn-outline-danger">File Complaint</a>
+                        {% elif b.booking_status == 6 %}
+                        <span class="text-muted">Work in Progress</span>
                         {% elif b.booking_status == 0 %}
                         <span class="text-muted">Awaiting Acceptance</span>
                         {% elif b.booking_status == 1 %}
                         <span class="text-muted">Work in Progress</span>
+                        {% elif b.booking_status == 5 %}
+                        <span class="text-muted">Estimate Rejected</span>
                         {% else %}
                         <span class="text-muted">-</span>
                         {% endif %}

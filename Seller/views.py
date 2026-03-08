@@ -28,6 +28,8 @@ def editprofile(request):
         seller.seller_email=request.POST.get('txt_email')
         seller.seller_contact=request.POST.get('txt_contact')
         seller.seller_address=request.POST.get('txt_address')
+        if 'seller_logo' in request.FILES:
+            seller.seller_logo=request.FILES['seller_logo']
         seller.save()
         return redirect('Seller:myprofile')
     else:
@@ -236,6 +238,22 @@ def pdtchart(request):
 
     except tbl_seller.DoesNotExist:
         return JsonResponse({'error': 'Seller not found'}, status=404)
+
+def view_complaints(request):
+    seller = tbl_seller.objects.get(id=request.session["sid"])
+    complaints = tbl_complaint.objects.filter(seller=seller, complaint_type=1).order_by('-complaint_date')
+    return render(request, 'Seller/view_complaints.html', {'complaints': complaints})
+
+def reply_complaint(request, complaint_id):
+    complaint = tbl_complaint.objects.get(id=complaint_id, seller=request.session.get("sid"))
+    if request.method == 'POST':
+        reply = request.POST.get('reply')
+        complaint.complaint_reply = reply
+        complaint.complaint_replydate = __import__('datetime').datetime.now().date()
+        complaint.complaint_status = 1
+        complaint.save()
+        return redirect('Seller:view_complaints')
+    return render(request, 'Seller/reply_complaint.html', {'complaint': complaint})
 
 
 

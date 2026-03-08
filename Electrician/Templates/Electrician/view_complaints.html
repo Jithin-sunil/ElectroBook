@@ -1,0 +1,97 @@
+{% extends 'Electrician/head.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card shadow-lg p-4">
+                <h3 class="text-center mb-4 text-primary fw-bold">Complaints Received</h3>
+                
+                {% if complaints %}
+                <div class="table-responsive">
+                    <table class="table table-hover table-bordered align-middle">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>#</th>
+                                <th>From User</th>
+                                <th>Subject</th>
+                                <th>Date</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for complaint in complaints %}
+                            <tr>
+                                <td>{{ forloop.counter }}</td>
+                                <td>{{ complaint.user.user_name }}</td>
+                                <td>{{ complaint.complaint_title }}</td>
+                                <td>{{ complaint.complaint_date|date:"d M Y" }}</td>
+                                <td>
+                                    {% if complaint.complaint_reply %}
+                                        <span class="badge bg-success">Replied</span>
+                                    {% else %}
+                                        <span class="badge bg-warning text-dark">Pending</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#complaintModal{{ complaint.id }}">
+                                        View & Reply
+                                    </button>
+                                </td>
+                            </tr>
+                            
+                            <!-- Modal for complaint details -->
+                            <div class="modal fade" id="complaintModal{{ complaint.id }}" tabindex="-1">
+                                <div class="modal-dialog modal-lg">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title">{{ complaint.complaint_title }}</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <div class="mb-3">
+                                                <strong>From User:</strong> {{ complaint.user.user_name }}
+                                            </div>
+                                            <div class="mb-3">
+                                                <strong>Date:</strong> {{ complaint.complaint_date|date:"d M Y H:i" }}
+                                            </div>
+                                            <div class="mb-3">
+                                                <strong>Complaint:</strong>
+                                                <p class="border p-2 bg-light">{{ complaint.complaint_content }}</p>
+                                            </div>
+                                            {% if complaint.complaint_reply %}
+                                            <div class="mb-3">
+                                                <strong>Your Reply ({{ complaint.complaint_replydate|date:"d M Y" }}):</strong>
+                                                <p class="border p-2 bg-info bg-opacity-10">{{ complaint.complaint_reply }}</p>
+                                            </div>
+                                            {% else %}
+                                            <div class="alert alert-info">
+                                                Please provide a response to this complaint.
+                                            </div>
+                                            {% endif %}
+                                        </div>
+                                        <div class="modal-footer">
+                                            {% if not complaint.complaint_reply %}
+                                            <a href="{% url 'Electrician:reply_complaint' complaint.id %}" class="btn btn-primary">Reply to Complaint</a>
+                                            {% else %}
+                                            <p class="text-muted">Response recorded on {{ complaint.complaint_replydate|date:"d M Y" }}</p>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <div class="alert alert-info text-center" role="alert">
+                    <p class="mb-0">No complaints received yet.</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

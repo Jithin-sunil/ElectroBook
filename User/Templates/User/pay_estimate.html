@@ -5,7 +5,7 @@
     <div class="row justify-content-center">
         <div class="col-md-6">
             <div class="card shadow-lg p-4">
-                <h3 class="text-center text-primary mb-4">Pay Work Estimate</h3>
+                <h3 class="text-center text-primary mb-4">Review Work Estimate</h3>
                 <h6 class="text-center mb-4">Electrician: {{ booking.electrician.electrician_name }}</h6>
                 <div class="alert alert-info">
                     <strong>Work Details / Items Bought:</strong><br>
@@ -14,22 +14,9 @@
                 <h4 class="text-center mt-3 text-success">Total Cost: ₹{{ booking.estimate_amount }}</h4>
                 <form method="POST" class="mt-4">
                     {% csrf_token %}
-                    <div class="mb-3">
-                        <label class="form-label fw-bold">Card Number</label>
-                        <input type="text" class="form-control" placeholder="XXXX XXXX XXXX XXXX" required>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label fw-bold">Expiry Date</label>
-                            <input type="text" class="form-control" placeholder="MM/YY" required>
-                        </div>
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label fw-bold">CVV</label>
-                            <input type="password" class="form-control" placeholder="XXX" required maxlength="3">
-                        </div>
-                    </div>
-                    <div class="d-grid mt-4">
-                        <button type="submit" class="btn btn-success btn-lg">Pay Securely</button>
+                    <div class="d-grid gap-2">
+                        <button type="submit" name="action" value="accept" class="btn btn-success btn-lg">Accept Estimate</button>
+                        <button type="submit" name="action" value="reject" class="btn btn-danger btn-lg">Reject Estimate</button>
                     </div>
                 </form>
             </div>

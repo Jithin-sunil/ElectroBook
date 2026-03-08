@@ -5,6 +5,8 @@ app_name='Electrician'
 urlpatterns = [
     path('myprofile/', views.myprofile, name='myprofile'),
     path('work_gallery/', views.work_gallery, name='work_gallery'),
+    path('delete_photo/<int:photo_id>/', views.delete_photo, name='delete_photo'),
+    path('delete_work/', views.delete_work, name='delete_work'),
     path('editprofile/',views.editprofile,name='editprofile'),
     path('changepassword/',views.changepassword,name='changepassword'),
     path('dahomepage/',views.dahomepage,name='dahomepage'),
@@ -32,6 +34,9 @@ urlpatterns = [
     
     path('mybooking/',views.mybooking,name='mybooking'),
     path('viewcartproduct/<int:id>',views.viewcartproduct,name='viewcartproduct'),
+    
+    path('view_complaints/', views.view_complaints, name='view_complaints'),
+    path('reply_complaint/<int:complaint_id>/', views.reply_complaint, name='reply_complaint'),
 
     path('logout/',views.logout,name='logout'),
 ]

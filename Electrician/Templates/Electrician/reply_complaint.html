@@ -1,0 +1,41 @@
+{% extends 'Electrician/head.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-lg p-4">
+                <h3 class="text-center mb-4 text-primary fw-bold">Reply to Complaint</h3>
+                
+                <div class="card mb-4 bg-light">
+                    <div class="card-body">
+                        <h5 class="card-title text-info">{{ complaint.complaint_title }}</h5>
+                        <p class="card-text">
+                            <strong>From User:</strong> {{ complaint.user.user_name }}<br>
+                            <strong>Date Filed:</strong> {{ complaint.complaint_date|date:"d M Y H:i" }}<br>
+                        </p>
+                        <div class="border-top pt-3 mt-3">
+                            <strong>Complaint Details:</strong>
+                            <p class="mt-2 border-start border-warning ps-3">{{ complaint.complaint_content }}</p>
+                        </div>
+                    </div>
+                </div>
+
+                <form method="POST" id="replyForm">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="reply" class="form-label fw-bold">Your Response</label>
+                        <textarea class="form-control" id="reply" name="reply" rows="6" placeholder="Enter your response to this complaint..." required></textarea>
+                        <small class="form-text text-muted">Please provide a detailed response addressing the user's concerns.</small>
+                    </div>
+
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                        <a href="{% url 'Electrician:view_complaints' %}" class="btn btn-secondary me-2">Cancel</a>
+                        <button type="submit" class="btn btn-success">Send Reply</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

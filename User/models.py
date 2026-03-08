@@ -3,14 +3,23 @@ from Guest.models import *
 from Seller.models import *
 # Create your models here.
 class tbl_complaint(models.Model):
-    complaint_title=models.CharField(max_length=30)
-    complaint_content=models.CharField(max_length=30)
+    COMPLAINT_TYPE_CHOICES = (
+        (1, 'Product'),
+        (2, 'Electrician'),
+        (3, 'Site'),
+    )
+    
+    complaint_type = models.IntegerField(choices=COMPLAINT_TYPE_CHOICES, default=1)
+    complaint_title=models.CharField(max_length=100)
+    complaint_content=models.TextField()
     complaint_date=models.DateField(auto_now_add=True)
     complaint_status=models.IntegerField(default=0)
-    complaint_reply=models.CharField(max_length=30)
-    complaint_replydate=models.DateField(null=True)
+    complaint_reply=models.TextField(null=True, blank=True)
+    complaint_replydate=models.DateField(null=True, blank=True)
     user=models.ForeignKey(tbl_user,on_delete=models.CASCADE)
-    product=models.ForeignKey(tbl_product,on_delete=models.CASCADE)
+    product=models.ForeignKey(tbl_product,on_delete=models.CASCADE, null=True, blank=True)
+    electrician=models.ForeignKey(tbl_electrician,on_delete=models.CASCADE, null=True, blank=True)
+    seller=models.ForeignKey(tbl_seller,on_delete=models.CASCADE, null=True, blank=True)
 
     
 
@@ -28,6 +37,8 @@ class tbl_work_booking(models.Model):
     booking_date = models.DateField(auto_now_add=True)
     work_date = models.DateField()
     work_details = models.TextField()
+    work_location = models.CharField(max_length=200,null=True)
+    work_file = models.FileField(upload_to="Assets/WorkBookings/", null=True, blank=True)
     booking_status = models.IntegerField(default=0)
     estimate_details = models.TextField(null=True)
     estimate_amount = models.CharField(max_length=30, null=True)

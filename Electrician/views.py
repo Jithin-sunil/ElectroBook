@@ -30,6 +30,8 @@ def editprofile(request):
         electrician.electrician_email=request.POST.get('txt_email')
         electrician.electrician_contact=request.POST.get('txt_contact')
         electrician.electrician_address=request.POST.get('txt_address')
+        if 'electrician_photo' in request.FILES:
+            electrician.electrician_photo=request.FILES['electrician_photo']
         electrician.save()
         return redirect('Electrician:myprofile')
     else:
@@ -253,13 +255,60 @@ def work_gallery(request):
     electrician = tbl_electrician.objects.get(id=request.session["did"])
     gallery = tbl_electrician_gallery.objects.filter(electrician=electrician).order_by('-uploaded_at')
     if request.method == "POST":
-        photo = request.FILES.get('gallery_photo')
+        photos = request.FILES.getlist('gallery_photo')
         caption = request.POST.get('caption', '')
-        if photo:
-            tbl_electrician_gallery.objects.create(
-                electrician=electrician,
-                gallery_photo=photo,
-                caption=caption
-            )
+        for photo in photos:
+            if photo:
+                tbl_electrician_gallery.objects.create(
+                    electrician=electrician,
+                    gallery_photo=photo,
+                    caption=caption
+                )
         return redirect('Electrician:work_gallery')
-    return render(request, 'Electrician/work_gallery.html', {'gallery': gallery})
+    
+    # Group gallery by caption
+    grouped_gallery = {}
+    for item in gallery:
+        key = item.caption or 'No Caption'
+        if key not in grouped_gallery:
+            grouped_gallery[key] = []
+        grouped_gallery[key].append({
+            'id': item.id,
+            'gallery_photo': item.gallery_photo.url,
+            'uploaded_at': item.uploaded_at,
+            'delete_url': f'/electrician/delete_photo/{item.id}/'
+        })
+    
+    return render(request, 'Electrician/work_gallery.html', {'grouped_gallery': grouped_gallery})
+
+def delete_photo(request, photo_id):
+    if request.method == 'POST':
+        try:
+            photo = tbl_electrician_gallery.objects.get(id=photo_id, electrician=request.session["did"])
+            photo.delete()
+        except tbl_electrician_gallery.DoesNotExist:
+            pass
+    return redirect('Electrician:work_gallery')
+
+def delete_work(request):
+    if request.method == 'POST':
+        caption = request.POST.get('caption')
+        if caption:
+            tbl_electrician_gallery.objects.filter(electrician=request.session["did"], caption=caption).delete()
+    return redirect('Electrician:work_gallery')
+
+def view_complaints(request):
+    electrician = tbl_electrician.objects.get(id=request.session["did"])
+    complaints = tbl_complaint.objects.filter(electrician=electrician, complaint_type=2).order_by('-complaint_date')
+    return render(request, 'Electrician/view_complaints.html', {'complaints': complaints})
+
+def reply_complaint(request, complaint_id):
+    complaint = tbl_complaint.objects.get(id=complaint_id, electrician=request.session.get("did"))
+    if request.method == 'POST':
+        reply = request.POST.get('reply')
+        complaint.complaint_reply = reply
+        complaint.complaint_replydate = __import__('datetime').datetime.now().date()
+        complaint.complaint_status = 1
+        complaint.save()
+        return redirect('Electrician:view_complaints')
+    return render(request, 'Electrician/reply_complaint.html', {'complaint': complaint})

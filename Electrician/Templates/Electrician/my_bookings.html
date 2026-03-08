@@ -12,6 +12,8 @@
                     <th>Booked On</th>
                     <th>Work Date</th>
                     <th>Job Details</th>
+                    <th>Work Location</th>
+                    <th>Work File</th>
                     <th>Status</th>
                     <th>Actions</th>
                 </tr>
@@ -29,6 +31,13 @@
                     <td class="text-start">
                         <small>{{ b.work_details }}</small>
                     </td>
+                    <td>{{ b.work_location }}</td>
+                    <td>
+                        {% if b.work_file %}
+                        <a href="{{ b.work_file.url }}" target="_blank" class="btn btn-sm btn-outline-secondary">View File</a>
+                        {% else %}
+                        <span class="text-muted">No File Uploaded</span>
+                        {% endif %}
                     <td>
                         {% if b.booking_status == 0 %}
                         <span class="badge bg-warning text-dark">Pending</span>
@@ -37,9 +46,13 @@
                         {% elif b.booking_status == 2 %}
                         <span class="badge bg-danger">Rejected</span>
                         {% elif b.booking_status == 3 %}
-                        <span class="badge bg-secondary">Awaiting User Payment</span>
+                        <span class="badge bg-info text-dark">Estimate Sent - Awaiting User Response</span>
                         {% elif b.booking_status == 4 %}
                         <span class="badge bg-success">Completed & Paid</span>
+                        {% elif b.booking_status == 5 %}
+                        <span class="badge bg-secondary">Estimate Rejected by User</span>
+                        {% elif b.booking_status == 6 %}
+                        <span class="badge bg-warning text-dark">Work in Progress</span>
                         {% endif %}
                     </td>
                     <td>
@@ -50,10 +63,14 @@
                             class="btn btn-sm btn-danger mb-1">Reject</a>
                         {% elif b.booking_status == 1 %}
                         <a href="{% url 'Electrician:send_estimate' b.id %}"
-                            class="btn btn-sm btn-info mb-1 text-white">Send Final Estimate</a>
+                            class="btn btn-sm btn-info mb-1 text-white">Send  Estimate</a>
+                        {% elif b.booking_status == 6 %}
+                        <a href="{% url 'Electrician:complete_booking' b.id %}"
+                            class="btn btn-sm btn-success mb-1">Complete Work</a>
                         {% else %}
                         <span class="text-muted">No actions</span>
                         {% endif %}
+                       
                     </td>
                 </tr>
                 {% empty %}

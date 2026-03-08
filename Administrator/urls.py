@@ -38,6 +38,8 @@ urlpatterns = [
     path('viewuserfeedback/',views.viewuserfeedback,name='viewuserfeedback'),
     path('viewsellerfeedback/',views.viewsellerfeedback,name='viewsellerfeedback'),
     path('bookingreport/',views.bookingreport,name='bookingreport'),
+    path('view_complaints/', views.view_complaints, name='view_complaints'),
+    path('reply_complaint/<int:complaint_id>/', views.reply_complaint, name='reply_complaint'),
     path('logout/',views.logout,name='logout'),
     
 ]

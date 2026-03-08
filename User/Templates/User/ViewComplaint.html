@@ -2,52 +2,105 @@
 
 {% block content %}
 <div class="container mt-5">
-    <div class="row justify-content-center">
-        <div class="col-md-10">
-            <div class="card shadow p-4">
-                <h3 class="text-center mb-3 text-primary">Complaint List</h3>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card shadow-lg p-4">
+                <h3 class="text-center mb-4 text-primary fw-bold">My Complaints</h3>
+                
+                <div class="mb-4">
+                    <a href="{% url 'User:complaint_site' %}" class="btn btn-outline-primary me-2">Report Site Issue</a>
+                </div>
                 
                 {% if complaint %}
                 <div class="table-responsive">
-                    <table class="table table-bordered table-striped text-center">
+                    <table class="table table-hover table-bordered align-middle">
                         <thead class="table-dark">
                             <tr>
                                 <th>#</th>
+                                <th>Type</th>
                                 <th>Subject</th>
-                                <th>Complaint</th>
                                 <th>Date</th>
-                                <th>Reply</th>
-                                <th>Reply Date</th>
+                                <th>Status</th>
+                                <th>Action</th>
                             </tr>
                         </thead>
                         <tbody>
-                            {% for i in complaint %}
+                            {% for c in complaint %}
                             <tr>
                                 <td>{{ forloop.counter }}</td>
-                                <td>{{ i.complaint_title }}</td>
-                                <td>{{ i.complaint_content }}</td>
-                                <td>{{ i.complaint_date }}</td>
                                 <td>
-                                    {% if i.complaint_reply %}
-                                        <span class="badge bg-success">{{ i.complaint_reply }}</span>
+                                    {% if c.complaint_type == 1 %}
+                                        <span class="badge bg-info">Product</span>
+                                    {% elif c.complaint_type == 2 %}
+                                        <span class="badge bg-warning text-dark">Electrician</span>
                                     {% else %}
-                                        <span class="badge bg-warning">Pending</span>
+                                        <span class="badge bg-secondary">Site</span>
+                                    {% endif %}
+                                </td>
+                                <td>{{ c.complaint_title }}</td>
+                                <td>{{ c.complaint_date|date:"d M Y" }}</td>
+                                <td>
+                                    {% if c.complaint_reply %}
+                                        <span class="badge bg-success">Resolved</span>
+                                    {% else %}
+                                        <span class="badge bg-warning text-dark">Pending</span>
                                     {% endif %}
                                 </td>
                                 <td>
-                                    {% if i.complaint_replydate %}
-                                        {{ i.complaint_replydate }}
-                                    {% else %}
-                                        <span class="text-muted">-</span>
-                                    {% endif %}
+                                    <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#complaintModal{{ c.id }}">
+                                        View Details
+                                    </button>
                                 </td>
                             </tr>
+                            
+                            <!-- Modal for complaint details -->
+                            <div class="modal fade" id="complaintModal{{ c.id }}" tabindex="-1">
+                                <div class="modal-dialog modal-lg">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title">{{ c.complaint_title }}</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <div class="mb-3">
+                                                <strong>Type:</strong>
+                                                {% if c.complaint_type == 1 %}
+                                                    Product - {{ c.product.product_name }}
+                                                {% elif c.complaint_type == 2 %}
+                                                    Electrician - {{ c.electrician.electrician_name }}
+                                                {% else %}
+                                                    Site Issue
+                                                {% endif %}
+                                            </div>
+                                            <div class="mb-3">
+                                                <strong>Date:</strong> {{ c.complaint_date|date:"d M Y H:i" }}
+                                            </div>
+                                            <div class="mb-3">
+                                                <strong>Your Complaint:</strong>
+                                                <p class="border p-2 bg-light">{{ c.complaint_content }}</p>
+                                            </div>
+                                            {% if c.complaint_reply %}
+                                            <div class="mb-3">
+                                                <strong>Reply ({{ c.complaint_replydate|date:"d M Y" }}):</strong>
+                                                <p class="border p-2 bg-success bg-opacity-10">{{ c.complaint_reply }}</p>
+                                            </div>
+                                            {% else %}
+                                            <div class="alert alert-warning">
+                                                Your complaint is under review. We'll respond soon.
+                                            </div>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                             {% endfor %}
                         </tbody>
                     </table>
                 </div>
                 {% else %}
-                <p class="text-center text-danger fw-bold">No complaints available.</p>
+                <div class="alert alert-info text-center" role="alert">
+                    <p class="mb-0">You haven't filed any complaints yet.</p>
+                </div>
                 {% endif %}
             </div>
         </div>

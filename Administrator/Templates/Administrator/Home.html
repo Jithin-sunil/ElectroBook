@@ -120,6 +120,22 @@
             </div>
         </div>
     </div>
+    <!-- Complaints Metric Row -->
+    <div class="row">
+        <div class="col-md-4 mb-4">
+            <a href="{% url 'Admin:view_complaints' %}" class="text-decoration-none">
+            <div class="card metric-card bg-danger text-white h-100">
+                <div class="card-body">
+                    <h5 class="card-title-muted text-white-50 mb-3">Total Complaints</h5>
+                    <div class="d-flex align-items-center">
+                        <h2 class="metric-value mb-0 text-white">{{ complaint_count }}</h2>
+                    </div>
+                    <i data-feather="alert-circle" class="metric-icon-bg"></i>
+                </div>
+            </div>
+            </a>
+        </div>
+    </div>
 
     <!-- Charts Row - small simple graphs -->
     <div class="row">

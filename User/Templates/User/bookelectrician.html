@@ -6,7 +6,7 @@
         <div class="col-md-6">
             <div class="card shadow-lg p-4">
                 <h3 class="text-center text-primary mb-4">Book Electrician</h3>
-                <form method="POST">
+                <form method="POST" enctype="multipart/form-data">
                     {% csrf_token %}
                     <div class="mb-3">
                         <label for="work_date" class="form-label fw-bold">Select Work Date</label>
@@ -18,6 +18,16 @@
                         <textarea class="form-control" name="work_details" id="work_details" rows="4" required
                             placeholder="Describe the work required..."></textarea>
                     </div>
+                    <div class="mb-3">
+                        <label for="file" class="form-label fw-bold">Upload File (Optional)</label>
+                        <input type="file" class="form-control" name="file" id="file">
+                    </div>
+                    <div class="mb-3">
+                        <label for="address" class="form-label fw-bold">Work Location </label>
+                        <textarea class="form-control" name="address" id="address" rows="3" required
+                            placeholder="Enter the location where the work needs to be done..."></textarea>
+                    </div>
+
                     <div class="d-grid mt-4">
                         <button type="submit" class="btn btn-primary btn-lg">Confirm Booking</button>
                     </div>

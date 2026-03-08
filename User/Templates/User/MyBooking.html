@@ -62,7 +62,8 @@
                 </td>
                 <td class="text-center">
                     {% if j.cart_status == 6 %}
-                    <a href="{% url 'User:rating' j.product.id %}" class="btn btn-sm btn-outline-success">Give Review & Rating</a>
+                    <a href="{% url 'User:rating' j.product.id %}" class="btn btn-sm btn-outline-success me-2">Give Review & Rating</a>
+                    <a href="{% url 'User:complaint_product' j.product.id %}" class="btn btn-sm btn-outline-danger">File Complaint</a>
                     {% else %}
                     N/A
                     {% endif %}

@@ -211,6 +211,7 @@ def homepage(request):
     user_count = tbl_user.objects.count()
     seller_count = tbl_seller.objects.count()
     electrician_count = tbl_electrician.objects.count()
+    complaint_count = tbl_complaint.objects.count()
     
     today = date.today()
     labels = []
@@ -230,6 +231,7 @@ def homepage(request):
         'user_count': user_count, 
         'seller_count': seller_count, 
         'electrician_count': electrician_count,
+        'complaint_count': complaint_count,
         'growth_labels': json.dumps(labels),
         'growth_data': json.dumps(data_list)
     })
@@ -241,6 +243,23 @@ def homepage(request):
 def sellerverification(request):
     seller=tbl_seller.objects.filter(seller_status=0)
     return render(request,'Administrator/Sellerverification.html',{'seller':seller})
+
+
+def view_complaints(request):
+    # show all complaints to admin
+    complaints = tbl_complaint.objects.all().order_by('-complaint_date')
+    return render(request, 'Administrator/view_complaints.html', {'complaints': complaints})
+
+
+def reply_complaint(request, complaint_id):
+    complaint = tbl_complaint.objects.get(id=complaint_id)
+    if request.method == 'POST':
+        complaint.complaint_reply = request.POST.get('reply')
+        complaint.complaint_replydate = date.today()
+        complaint.complaint_status = 1
+        complaint.save()
+        return redirect('Admin:view_complaints')
+    return render(request, 'Administrator/reply_complaint.html', {'complaint': complaint})
 
 def electricianverification(request):
     electricians = tbl_electrician.objects.filter(electrician_status=0)

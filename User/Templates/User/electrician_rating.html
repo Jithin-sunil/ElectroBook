@@ -15,7 +15,7 @@
                     {% endif %}
                     <div class="mb-3" id="rating_stars" role="button" tabindex="0" title="Click to view reviews">
                         {% for i in ar %}
-                        {% if i <= avg %}
+                        {% if i <= avg %} 
                         <i class="bi bi-star-fill text-warning"></i>
                         {% else %}
                         <i class="bi bi-star text-warning"></i>
@@ -24,6 +24,7 @@
                         <span class="ms-2 small text-muted">({{ avg }}/5 · {{ count }} reviews)</span>
                     </div>
                     <a href="{% url 'User:bookelectrician' electrician.id %}" class="btn btn-primary btn-sm">Book Now</a>
+                    <a href="{% url 'User:view_electrician_gallery' electrician.id %}" class="btn btn-outline-secondary btn-sm ms-2">View Gallery</a>
                 </div>
             </div>
         </div>

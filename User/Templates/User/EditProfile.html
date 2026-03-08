@@ -7,7 +7,7 @@
         <div class="col-md-6">
             <div class="card shadow p-4">
                 <h3 class="text-center mb-4 fw-bold text-primary">Edit Profile</h3>
-                <form action="" method="POST">
+                <form action="" method="POST" enctype="multipart/form-data">
                     {% csrf_token %}
                     <div class="mb-3">
                         <label for="txt_name" class="form-label fw-bold">Name:</label>
@@ -33,6 +33,17 @@
                     <div class="mb-3">
                         <label for="txt_address" class="form-label fw-bold">Address:</label>
                         <textarea class="form-control" required name="txt_address" id="txt_address" rows="3">{{ user.user_address }}</textarea>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="user_photo" class="form-label fw-bold">Profile Photo:</label>
+                        {% if user.user_photo %}
+                        <div class="mb-2">
+                            <img src="{{ user.user_photo.url }}" alt="Profile" class="img-thumbnail" style="max-height: 150px;">
+                        </div>
+                        {% endif %}
+                        <input type="file" class="form-control" name="user_photo" id="user_photo" accept="image/*">
+                        <small class="text-muted">Upload a new photo to replace the current one</small>
                     </div>
 
                     <div class="text-center mt-3">

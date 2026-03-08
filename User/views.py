@@ -35,6 +35,8 @@ def editprofile(request):
         user.user_email=request.POST.get('txt_email')
         user.user_contact=request.POST.get('txt_contact')
         user.user_address=request.POST.get('txt_address')
+        if 'user_photo' in request.FILES:
+            user.user_photo=request.FILES['user_photo']
         user.save()
         return redirect('User:myprofile')
     else:
@@ -56,22 +58,42 @@ def changepassword(request):
         return render(request,'User/ChangePassword.html',{'user':user})
         
 
-def complaint(request,id):
-    userid=tbl_user.objects.get(id=request.session["uid"])
-    complaint=tbl_complaint.objects.filter(user=userid)
-    productid=tbl_product.objects.get(id=id)
-    if request.method=='POST':
-        complaint_title=request.POST.get("txt_subname")
-        complaint_content=request.POST.get("txt_complaint")
-        tbl_complaint.objects.create(complaint_title=complaint_title,complaint_content=complaint_content,user=userid,product=productid)
+def complaint(request, id=None, complaint_type=1):
+    userid = tbl_user.objects.get(id=request.session["uid"])
+    
+    if request.method == 'POST':
+        complaint_title = request.POST.get("txt_subname")
+        complaint_content = request.POST.get("txt_complaint")
+        comp_type = request.POST.get("complaint_type", complaint_type)
+        
+        complaint_data = {
+            'complaint_title': complaint_title,
+            'complaint_content': complaint_content,
+            'user': userid,
+            'complaint_type': int(comp_type)
+        }
+        
+        if comp_type == '1' and id:  # Product complaint
+            product = tbl_product.objects.get(id=id)
+            complaint_data['product'] = product
+        elif comp_type == '2' and id:  # Electrician complaint
+            electrician = tbl_electrician.objects.get(id=id)
+            complaint_data['electrician'] = electrician
+        
+        tbl_complaint.objects.create(**complaint_data)
         return redirect('User:viewcomplaint')
     else:
-        return render(request,'User/Postcomplaint.html')
+        context = {'complaint_type': complaint_type}
+        if id and complaint_type == 1:
+            context['product'] = tbl_product.objects.get(id=id)
+        elif id and complaint_type == 2:
+            context['electrician'] = tbl_electrician.objects.get(id=id)
+        return render(request, 'User/Postcomplaint.html', context)
 
 def viewcomplaint(request):
-    userid=tbl_user.objects.get(id=request.session["uid"])
-    complaint=tbl_complaint.objects.filter(user=userid)
-    return render(request,'User/ViewComplaint.html',{'complaint':complaint})
+    userid = tbl_user.objects.get(id=request.session["uid"])
+    complaints = tbl_complaint.objects.filter(user=userid).order_by('-complaint_date')
+    return render(request, 'User/ViewComplaint.html', {'complaint': complaints})
 
 
 
@@ -102,6 +124,24 @@ def electrician_rating(request, mid):
         'avg': avg,
         'count': counts
     })
+
+def view_electrician_gallery(request, did):
+    electrician = tbl_electrician.objects.get(id=did)
+    gallery = tbl_electrician_gallery.objects.filter(electrician=electrician).order_by('-uploaded_at')
+    
+    # Group gallery by caption
+    grouped_gallery = {}
+    for item in gallery:
+        key = item.caption or 'No Caption'
+        if key not in grouped_gallery:
+            grouped_gallery[key] = []
+        grouped_gallery[key].append({
+            'id': item.id,
+            'gallery_photo': item.gallery_photo.url,
+            'uploaded_at': item.uploaded_at
+        })
+    
+    return render(request, 'User/view_electrician_gallery.html', {'electrician': electrician, 'grouped_gallery': grouped_gallery})
 
 def ajax_electrician_star(request):
     if 'uid' not in request.session:
@@ -165,9 +205,11 @@ def bookelectrician(request, did):
     if request.method == "POST":
         work_date = request.POST.get("work_date")
         work_details = request.POST.get("work_details")
+        work_location = request.POST.get("address")
+        work_file = request.FILES.get("file")
         electrician = tbl_electrician.objects.get(id=did)
         user = tbl_user.objects.get(id=request.session["uid"])
-        tbl_work_booking.objects.create(user=user, electrician=electrician, work_date=work_date, work_details=work_details)
+        tbl_work_booking.objects.create(user=user, electrician=electrician, work_date=work_date, work_details=work_details, work_location=work_location, work_file=work_file)
         return redirect("User:myworkbookings")
     return render(request, 'User/bookelectrician.html')
 
@@ -178,9 +220,19 @@ def myworkbookings(request):
 def pay_estimate(request, id):
     booking = tbl_work_booking.objects.get(id=id)
     if request.method == "POST":
-        booking.booking_status = 4
-        booking.save()
-        return redirect("User:myworkbookings")
+        action = request.POST.get('action')
+        if action == 'accept':
+            booking.booking_status = 6  # Work accepted, ready to start
+            booking.save()
+            return redirect("User:myworkbookings")
+        elif action == 'reject':
+            booking.booking_status = 5  # Estimate rejected by user
+            booking.save()
+            return redirect("User:myworkbookings")
+        elif action == 'pay':
+            booking.booking_status = 4
+            booking.save()
+            return redirect("User:myworkbookings")
     return render(request, 'User/pay_estimate.html', {'booking': booking})
 
 
