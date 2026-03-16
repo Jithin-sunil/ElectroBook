@@ -80,10 +80,21 @@ def product(request):
         product_name=request.POST.get("txt_name")
         product_description=request.POST.get("txt_desc")
         product_photo=request.FILES.get('txt_photo')
+        extra_photos = request.FILES.getlist('product_photos')
         product_price=request.POST.get("txt_price")
         subcategory_id=tbl_subcategory.objects.get(id=request.POST.get("subcategory"))
         seller_id=tbl_seller.objects.get(id=request.session["sid"])
-        tbl_product.objects.create(product_name=product_name,product_description=product_description,product_photo=product_photo,product_price=product_price,subcategory=subcategory_id,seller=seller_id,)
+        p = tbl_product.objects.create(
+            product_name=product_name,
+            product_description=product_description,
+            product_photo=product_photo,
+            product_price=product_price,
+            subcategory=subcategory_id,
+            seller=seller_id,
+        )
+        for photo in extra_photos:
+            if photo:
+                tbl_product_image.objects.create(product=p, product_image=photo)
         return redirect('Seller:product')
     else:
         return render(request,'Seller/Product.html',{'category':category,'subcategory':subcategory,'product':product})
