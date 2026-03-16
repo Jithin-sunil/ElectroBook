@@ -1,0 +1,108 @@
+{% extends 'Electrician/head.html' %}
+{% load static %}
+{% block content %}
+<section class="py-4" style="background: linear-gradient(135deg, #0f172a 0%, #1e3a5f 50%, #0f172a 100%); border-radius: 0 0 24px 24px;">
+  <div class="container text-white">
+    <div class="d-flex flex-wrap justify-content-between align-items-center gap-3">
+      <div>
+        <h1 class="h3 fw-bold mb-1">{{ product.product_name }}</h1>
+        <div class="small opacity-75">{{ product.subcategory.category.category_name }} • {{ product.subcategory.subcategory_name }}</div>
+      </div>
+      <a href="{% url 'Electrician:viewproduct' product.seller.id %}" class="btn btn-light fw-bold rounded-pill px-4">
+        <i class="bi bi-arrow-left me-2"></i>Back to products
+      </a>
+    </div>
+  </div>
+</section>
+
+<div class="container py-4">
+  <div class="row g-4">
+    <div class="col-lg-7">
+      <div class="card border-0 shadow-sm overflow-hidden">
+        <div class="card-body p-3 p-md-4">
+          <div class="row g-3">
+            <div class="col-12">
+              <img src="{{ product.product_photo.url }}" alt="{{ product.product_name }}" class="w-100 rounded-3" style="max-height:420px;object-fit:cover;">
+            </div>
+
+            {% if images %}
+            <div class="col-12">
+              <div class="d-flex gap-2 overflow-auto pb-1">
+                {% for img in images %}
+                <a href="{{ img.product_image.url }}" class="text-decoration-none">
+                  <img src="{{ img.product_image.url }}" alt="Photo" class="rounded-3 border" style="width:88px;height:88px;object-fit:cover;">
+                </a>
+                {% endfor %}
+              </div>
+              <div class="small text-muted mt-2">More photos</div>
+            </div>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-5">
+      <div class="card border-0 shadow-sm">
+        <div class="card-body p-4">
+          <div class="d-flex justify-content-between align-items-start gap-2">
+            <div>
+              <div class="fw-bold text-dark fs-5 mb-1">₹{{ product.product_price }}</div>
+              <div class="small text-muted">{{ product.product_description }}</div>
+            </div>
+            <span class="badge {% if product.total_stock|default:0 <= 0 %}bg-danger{% else %}bg-success{% endif %}">
+              {% if product.total_stock|default:0 <= 0 %}Out of stock{% else %}In stock: {{ product.total_stock }}{% endif %}
+            </span>
+          </div>
+
+          <hr class="my-3">
+
+          <div class="d-flex align-items-center justify-content-between">
+            <div class="small fw-bold text-dark">Rating</div>
+            <div class="small text-muted">{{ count }} review(s)</div>
+          </div>
+          <div class="mt-2">
+            {% for k in ar %}
+              {% if k <= avg %}<i class="bi bi-star-fill text-warning"></i>{% else %}<i class="bi bi-star text-secondary"></i>{% endif %}
+            {% endfor %}
+            <span class="ms-1 small text-muted">({{ avg }}/5)</span>
+          </div>
+
+          <div class="mt-4 d-grid gap-2">
+            {% if product.total_stock|default:0 <= 0 %}
+              <button class="btn btn-outline-secondary rounded-pill fw-bold" disabled><i class="bi bi-x-circle me-2"></i>Out of stock</button>
+            {% else %}
+              <a href="{% url 'Electrician:Addcart' product.id %}" class="btn btn-primary rounded-pill fw-bold py-2">
+                <i class="bi bi-cart-plus me-2"></i>Add to Cart
+              </a>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+
+      <div class="card border-0 shadow-sm mt-4">
+        <div class="card-body p-4">
+          <div class="fw-bold text-dark mb-3">Seller details</div>
+          <div class="d-flex gap-3 align-items-center">
+            <img src="{{ product.seller.seller_logo.url }}" alt="{{ product.seller.seller_name }}" class="rounded-circle border" style="width:56px;height:56px;object-fit:cover;">
+            <div class="flex-grow-1">
+              <div class="fw-bold">{{ product.seller.seller_name }}</div>
+              <div class="small text-muted">
+                {{ product.seller.place.place_name }}, {{ product.seller.place.district.district_name }}
+              </div>
+            </div>
+            <a href="{% url 'Electrician:viewproduct' product.seller.id %}" class="btn btn-sm btn-outline-primary rounded-pill">Store</a>
+          </div>
+          <hr class="my-3">
+          <div class="small text-muted">
+            <div class="mb-1"><i class="bi bi-envelope me-2"></i>{{ product.seller.seller_email }}</div>
+            <div class="mb-1"><i class="bi bi-telephone me-2"></i>{{ product.seller.seller_contact }}</div>
+            <div><i class="bi bi-geo-alt me-2"></i>{{ product.seller.seller_address }}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+

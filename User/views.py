@@ -460,6 +460,32 @@ def viewproduct(request,did):
     datas=zip(product,parry)
     return render(request,'User/viewproduct.html',{'product':datas,"ar":ar,'category':category,'subcategory':subcategory,'district':district,"seller_id":did})
 
+def product_detail(request, pid):
+    ar = [1, 2, 3, 4, 5]
+    product = tbl_product.objects.select_related('seller', 'subcategory', 'subcategory__category').get(id=pid)
+
+    # Stock
+    total_stock = tbl_stock.objects.filter(product=product.id).aggregate(total=Sum('stock_count'))['total'] or 0
+    total_cart = tbl_cart.objects.filter(product=product.id, cart_status__gt=1).aggregate(total=Sum('cart_qty'))['total'] or 0
+    product.total_stock = total_stock - total_cart
+
+    # Rating (avg as int, like other pages)
+    ratecount = tbl_rating.objects.filter(product=product.id).count()
+    if ratecount > 0:
+        tot = tbl_rating.objects.filter(product=product.id).aggregate(s=Sum('rating_data'))['s'] or 0
+        avg = tot // ratecount
+    else:
+        avg = 0
+
+    images = list(product.images.all().order_by('-created_at'))
+    return render(request, 'User/product_detail.html', {
+        'product': product,
+        'images': images,
+        'ar': ar,
+        'avg': avg,
+        'count': ratecount,
+    })
+
 
 
 def ajaxsearch(request):

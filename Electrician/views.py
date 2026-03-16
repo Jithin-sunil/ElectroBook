@@ -172,6 +172,30 @@ def viewproduct(request,did):
     datas=zip(product,parry)
     return render(request,'Electrician/viewproduct.html',{'product':datas,"ar":ar,'category':category,'subcategory':subcategory,'district':district,"seller_id":did})
 
+def product_detail(request, pid):
+    ar = [1, 2, 3, 4, 5]
+    product = tbl_product.objects.select_related('seller', 'subcategory', 'subcategory__category').get(id=pid)
+
+    total_stock = tbl_stock.objects.filter(product=product.id).aggregate(total=Sum('stock_count'))['total'] or 0
+    total_cart = tbl_cart.objects.filter(product=product.id, cart_status__gt=1).aggregate(total=Sum('cart_qty'))['total'] or 0
+    product.total_stock = total_stock - total_cart
+
+    ratecount = tbl_rating.objects.filter(product=product.id).count()
+    if ratecount > 0:
+        tot = tbl_rating.objects.filter(product=product.id).aggregate(s=Sum('rating_data'))['s'] or 0
+        avg = tot // ratecount
+    else:
+        avg = 0
+
+    images = list(product.images.all().order_by('-created_at'))
+    return render(request, 'Electrician/product_detail.html', {
+        'product': product,
+        'images': images,
+        'ar': ar,
+        'avg': avg,
+        'count': ratecount,
+    })
+
 def Addcart(request, pid):
     productdata = tbl_product.objects.get(id=pid)
     electrician_data = tbl_electrician.objects.get(id=request.session["did"])

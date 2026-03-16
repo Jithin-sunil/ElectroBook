@@ -21,6 +21,7 @@ urlpatterns = [
     path('ajaxplace/',views.ajaxplace,name='ajaxplace'),
     path('ajaxsellersearch/',views.ajaxsellersearch,name='ajaxsellersearch'),
     path('viewproduct/<int:did>',views.viewproduct,name='viewproduct'),
+    path('product/<int:pid>/', views.product_detail, name='product_detail'),
     path('ajaxsubcategory/',views.ajaxsubcategory,name='ajaxsubcategory'),
     path('ajaxsearch/',views.ajaxsearch,name='ajaxsearch'), 
     path('Addcart/<int:pid>',views.Addcart,name='Addcart'), 
