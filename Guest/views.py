@@ -51,7 +51,7 @@ def login(request):
             if seller.seller_status==0:
                 return render(request,'Guest/Login.html',{'msg':'pending'})
             elif seller.seller_status==2:
-                return render(request,'Guest/Login.html',{'msg':'rejected'})
+                return render(request,'Guest/Login.html',{'msg':'blocked'})
             else:
                 return redirect('Seller:sellerhomepage')
         elif dacount > 0:
@@ -62,7 +62,7 @@ def login(request):
             if delivery.electrician_status==0:
                 return render(request,'Guest/Login.html',{'msg':'pending'})
             elif delivery.electrician_status==2:
-                return render(request,'Guest/Login.html',{'msg':'rejected'})
+                return render(request,'Guest/Login.html',{'msg':'blocked'})
             else:
                 return redirect('Electrician:dahomepage')
         else:

@@ -3,6 +3,13 @@
 {% load static %}
 {% block content %}
 
+{% if warning %}
+<div class="alert alert-warning alert-dismissible fade show" role="alert">
+    <strong>Warning!</strong> You have {{ complaint_count }} complaints against you. Please improve your service to avoid suspension.
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
+{% endif %}
+
 <section style="background: linear-gradient(135deg, #1e3a5f 0%, #2d5a87 100%); min-height: 320px; border-radius: 12px; margin: 20px;">
   <div class="container-lg py-5">
     <div class="row align-items-center">

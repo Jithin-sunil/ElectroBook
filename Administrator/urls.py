@@ -40,6 +40,10 @@ urlpatterns = [
     path('bookingreport/',views.bookingreport,name='bookingreport'),
     path('view_complaints/', views.view_complaints, name='view_complaints'),
     path('reply_complaint/<int:complaint_id>/', views.reply_complaint, name='reply_complaint'),
+    path('block_electrician/<int:eid>/', views.block_electrician, name='block_electrician'),
+    path('unblock_electrician/<int:eid>/', views.unblock_electrician, name='unblock_electrician'),
+    path('block_seller/<int:sid>/', views.block_seller, name='block_seller'),
+    path('unblock_seller/<int:sid>/', views.unblock_seller, name='unblock_seller'),
     path('logout/',views.logout,name='logout'),
     
 ]

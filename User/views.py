@@ -95,6 +95,12 @@ def viewcomplaint(request):
     complaints = tbl_complaint.objects.filter(user=userid).order_by('-complaint_date')
     return render(request, 'User/ViewComplaint.html', {'complaint': complaints})
 
+def mark_solved(request, complaint_id):
+    complaint = tbl_complaint.objects.get(id=complaint_id, user__id=request.session["uid"])
+    complaint.user_solved = True
+    complaint.save()
+    return redirect('User:viewcomplaint')
+
 
 
 

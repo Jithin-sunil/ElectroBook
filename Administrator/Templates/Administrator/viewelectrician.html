@@ -134,11 +134,16 @@
                                         </div>
                                     </td>
                                     <td class="py-3 align-middle text-center">
-                                        <a href="{% url 'Admin:rejectelectrician' i.id %}"
+                                        {% if i.complaint_count > 5 %}
+                                        <div class="alert alert-warning py-1 px-2 mb-2" style="font-size: 12px;">
+                                            <i class="feather-icon" data-feather="alert-triangle"></i> Multiple Complaints ({{ i.complaint_count }})
+                                        </div>
+                                        {% endif %}
+                                        <a href="{% url 'Admin:block_electrician' i.id %}"
                                             class="btn btn-danger btn-action text-white shadow-sm"
-                                            onclick="return confirm('Are you sure you want to reject this electrician?');">
+                                            onclick="return confirm('Are you sure you want to block this electrician?');">
                                             <i data-feather="x" class="feather-icon"
-                                                style="width: 14px; height: 14px;"></i> Reject
+                                                style="width: 14px; height: 14px;"></i> Block
                                         </a>
                                     </td>
                                 </tr>
@@ -220,10 +225,15 @@
                                         </div>
                                     </td>
                                     <td class="py-3 align-middle text-center">
-                                        <a href="{% url 'Admin:acceptelectrician' i.id %}"
+                                        {% if i.complaint_count > 5 %}
+                                        <div class="alert alert-warning py-1 px-2 mb-2" style="font-size: 12px;">
+                                            <i class="feather-icon" data-feather="alert-triangle"></i> Multiple Complaints ({{ i.complaint_count }})
+                                        </div>
+                                        {% endif %}
+                                        <a href="{% url 'Admin:unblock_electrician' i.id %}"
                                             class="btn btn-success btn-action text-white shadow-sm">
                                             <i data-feather="check" class="feather-icon"
-                                                style="width: 14px; height: 14px;"></i> Accept
+                                                style="width: 14px; height: 14px;"></i> Unblock
                                         </a>
                                     </td>
                                 </tr>

@@ -5,7 +5,7 @@
     <div class="card p-4 mb-4">
         <h5 class="card-title">{{ complaint.complaint_title }}</h5>
         <p class="mb-1"><strong>User:</strong> {{ complaint.user.user_name }}</p>
-        <p class="mb-1"><strong>Date:</strong> {{ complaint.complaint_date|date:"d M Y H:i" }}</p>
+        <p class="mb-1"><strong>Date:</strong> {{ complaint.complaint_date|date:"d M Y" }}</p>
         <p class="mb-3"><strong>Complaint:</strong><br>{{ complaint.complaint_content }}</p>
     </div>
     <form method="POST">

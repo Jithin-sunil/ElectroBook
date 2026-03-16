@@ -55,7 +55,10 @@ def changepassword(request):
 def dahomepage(request):
     if 'did' not in request.session:
         return redirect('Guest:login')
-    return render(request,'Electrician/homepage.html')
+    electrician = tbl_electrician.objects.get(id=request.session["did"])
+    complaint_count = tbl_complaint.objects.filter(electrician=electrician, complaint_type=2, user_solved=False).count()
+    warning = complaint_count > 5
+    return render(request,'Electrician/homepage.html', {'warning': warning, 'complaint_count': complaint_count})
 
 def my_bookings(request):
     bookings = tbl_work_booking.objects.filter(electrician=request.session["did"]).order_by('-booking_date')

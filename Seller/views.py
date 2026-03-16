@@ -52,10 +52,13 @@ def sellerhomepage(request):
     if 'sid' not in request.session:
         return redirect('Guest:login')
     seller_id = request.session['sid']
+    seller = tbl_seller.objects.get(id=seller_id)
     products = tbl_product.objects.filter(seller=seller_id)[:8]
     product_count = tbl_product.objects.filter(seller=seller_id).count()
     order_count = tbl_cart.objects.filter(product__seller=seller_id, cart_status__gte=2).values('booking').distinct().count()
-    return render(request, 'Seller/Sellerhomepage.html', {'products': products, 'product_count': product_count, 'order_count': order_count})
+    complaint_count = tbl_complaint.objects.filter(seller=seller, complaint_type=1, user_solved=False).count()
+    warning = complaint_count > 5
+    return render(request, 'Seller/Sellerhomepage.html', {'products': products, 'product_count': product_count, 'order_count': order_count, 'warning': warning, 'complaint_count': complaint_count})
 
 def product(request):
     sellerid=tbl_seller.objects.get(id=request.session["sid"])

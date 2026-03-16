@@ -12,6 +12,7 @@ urlpatterns = [
     path('complaint_electrician/<int:id>',views.complaint,{'complaint_type':2},name='complaint_electrician'),
     path('complaint_site/',views.complaint,{'complaint_type':3},name='complaint_site'),
     path('viewcomplaint/',views.viewcomplaint,name='viewcomplaint'), 
+    path('mark_solved/<int:complaint_id>/', views.mark_solved, name='mark_solved'),
     path('viewseller/', views.viewseller, name='viewseller'),
     path('viewelectricians/', views.viewelectricians, name='viewelectricians'),
     path('electrician_rating/<int:mid>', views.electrician_rating, name='electrician_rating'),
