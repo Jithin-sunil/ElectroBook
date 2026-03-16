@@ -42,6 +42,8 @@
                                 <td>
                                     {% if c.complaint_reply %}
                                         <span class="badge bg-success">Resolved</span>
+                                    {% elif c.user_solved %}
+                                        <span class="badge bg-info">Solved by User</span>
                                     {% else %}
                                         <span class="badge bg-warning text-dark">Pending</span>
                                     {% endif %}
@@ -73,7 +75,7 @@
                                                 {% endif %}
                                             </div>
                                             <div class="mb-3">
-                                                <strong>Date:</strong> {{ c.complaint_date|date:"d M Y H:i" }}
+                                                <strong>Date:</strong> {{ c.complaint_date|date:"d M Y" }}
                                             </div>
                                             <div class="mb-3">
                                                 <strong>Your Complaint:</strong>
@@ -84,6 +86,11 @@
                                                 <strong>Reply ({{ c.complaint_replydate|date:"d M Y" }}):</strong>
                                                 <p class="border p-2 bg-success bg-opacity-10">{{ c.complaint_reply }}</p>
                                             </div>
+                                            {% if not c.user_solved %}
+                                            <div class="mb-3">
+                                                <a href="{% url 'User:mark_solved' c.id %}" class="btn btn-success btn-sm" onclick="return confirm('Mark this complaint as solved?')">Mark as Solved</a>
+                                            </div>
+                                            {% endif %}
                                             {% else %}
                                             <div class="alert alert-warning">
                                                 Your complaint is under review. We'll respond soon.

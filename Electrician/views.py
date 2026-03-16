@@ -55,7 +55,10 @@ def changepassword(request):
 def dahomepage(request):
     if 'did' not in request.session:
         return redirect('Guest:login')
-    return render(request,'Electrician/homepage.html')
+    electrician = tbl_electrician.objects.get(id=request.session["did"])
+    complaint_count = tbl_complaint.objects.filter(electrician=electrician, complaint_type=2, user_solved=False).count()
+    warning = complaint_count > 5
+    return render(request,'Electrician/homepage.html', {'warning': warning, 'complaint_count': complaint_count})
 
 def my_bookings(request):
     bookings = tbl_work_booking.objects.filter(electrician=request.session["did"]).order_by('-booking_date')
@@ -168,6 +171,30 @@ def viewproduct(request,did):
             parry.append(0)
     datas=zip(product,parry)
     return render(request,'Electrician/viewproduct.html',{'product':datas,"ar":ar,'category':category,'subcategory':subcategory,'district':district,"seller_id":did})
+
+def product_detail(request, pid):
+    ar = [1, 2, 3, 4, 5]
+    product = tbl_product.objects.select_related('seller', 'subcategory', 'subcategory__category').get(id=pid)
+
+    total_stock = tbl_stock.objects.filter(product=product.id).aggregate(total=Sum('stock_count'))['total'] or 0
+    total_cart = tbl_cart.objects.filter(product=product.id, cart_status__gt=1).aggregate(total=Sum('cart_qty'))['total'] or 0
+    product.total_stock = total_stock - total_cart
+
+    ratecount = tbl_rating.objects.filter(product=product.id).count()
+    if ratecount > 0:
+        tot = tbl_rating.objects.filter(product=product.id).aggregate(s=Sum('rating_data'))['s'] or 0
+        avg = tot // ratecount
+    else:
+        avg = 0
+
+    images = list(product.images.all().order_by('-created_at'))
+    return render(request, 'Electrician/product_detail.html', {
+        'product': product,
+        'images': images,
+        'ar': ar,
+        'avg': avg,
+        'count': ratecount,
+    })
 
 def Addcart(request, pid):
     productdata = tbl_product.objects.get(id=pid)

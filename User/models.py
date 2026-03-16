@@ -16,6 +16,7 @@ class tbl_complaint(models.Model):
     complaint_status=models.IntegerField(default=0)
     complaint_reply=models.TextField(null=True, blank=True)
     complaint_replydate=models.DateField(null=True, blank=True)
+    user_solved = models.BooleanField(default=False)
     user=models.ForeignKey(tbl_user,on_delete=models.CASCADE)
     product=models.ForeignKey(tbl_product,on_delete=models.CASCADE, null=True, blank=True)
     electrician=models.ForeignKey(tbl_electrician,on_delete=models.CASCADE, null=True, blank=True)

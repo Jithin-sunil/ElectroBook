@@ -2,58 +2,164 @@
 {% load static %}
 {% block content %}
 <div class="container-fluid mt-4">
-    <h3 class="mb-4">All Complaints</h3>
-    {% if complaints %}
-    <div class="table-responsive">
-        <table class="table table-bordered table-hover align-middle">
-            <thead class="table-dark">
-                <tr>
-                    <th>#</th>
-                    <th>User</th>
-                    <th>Type</th>
-                    <th>Subject</th>
-                    <th>Target</th>
-                    <th>Date</th>
-                    <th>Status</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for c in complaints %}
-                <tr>
-                    <td>{{ forloop.counter }}</td>
-                    <td>{{ c.user.user_name }}</td>
-                    <td>
-                        {% if c.complaint_type == 1 %}Product{% elif c.complaint_type == 2 %}Electrician{% else %}Site{% endif %}
-                    </td>
-                    <td>{{ c.complaint_title }}</td>
-                    <td>
-                        {% if c.complaint_type == 1 and c.product %}{{ c.product.product_name }}
-                        {% elif c.complaint_type == 2 and c.electrician %}{{ c.electrician.electrician_name }}
-                        {% else %}--{% endif %}
-                    </td>
-                    <td>{{ c.complaint_date|date:"d M Y" }}</td>
-                    <td>
-                        {% if c.complaint_reply %}
-                            <span class="badge bg-success">Resolved</span>
-                        {% else %}
-                            <span class="badge bg-warning text-dark">Pending</span>
-                        {% endif %}
-                    </td>
-                    <td>
-                        {% if not c.complaint_reply %}
-                        <a href="{% url 'Admin:reply_complaint' c.id %}" class="btn btn-sm btn-primary">Reply</a>
-                        {% else %}
-                        <span class="text-muted">Replied</span>
-                        {% endif %}
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+    <h3 class="mb-4">Complaints Management</h3>
+    <!-- Site Complaints Section -->
+    <div class="card mb-4">
+        <div class="card-header bg-primary text-white">
+            <h5 class="mb-0">Site Complaints</h5>
+        </div>
+        <div class="card-body">
+            {% if site_complaints %}
+            <div class="table-responsive">
+                <table class="table table-hover table-bordered align-middle">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>#</th>
+                            <th>User</th>
+                            <th>Subject</th>
+                            <th>Date</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for c in site_complaints %}
+                        <tr>
+                            <td>{{ forloop.counter }}</td>
+                            <td>{{ c.user.user_name }}</td>
+                            <td>{{ c.complaint_title }}</td>
+                            <td>{{ c.complaint_date|date:"d M Y" }}</td>
+                            <td>
+                                {% if c.complaint_reply %}
+                                    <span class="badge bg-success">Resolved</span>
+                                {% else %}
+                                    <span class="badge bg-warning text-dark">Pending</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if not c.complaint_reply %}
+                                <a href="{% url 'Admin:reply_complaint' c.id %}" class="btn btn-sm btn-primary">Reply</a>
+                                {% else %}
+                                <span class="text-muted">Replied</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="alert alert-info">No site complaints submitted yet.</div>
+            {% endif %}
+        </div>
     </div>
-    {% else %}
-    <div class="alert alert-info">No complaints submitted yet.</div>
-    {% endif %}
+
+    <!-- Electrician Complaints Section -->
+    <div class="card mb-4">
+        <div class="card-header bg-warning text-dark">
+            <h5 class="mb-0">Complaints Against Electricians</h5>
+        </div>
+        <div class="card-body">
+            {% if electrician_complaints %}
+            <div class="table-responsive">
+                <table class="table table-hover table-bordered align-middle">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>#</th>
+                            <th>User</th>
+                            <th>Electrician</th>
+                            <th>Subject</th>
+                            <th>Date</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for c in electrician_complaints %}
+                        <tr>
+                            <td>{{ forloop.counter }}</td>
+                            <td>{{ c.user.user_name }}</td>
+                            <td>{{ c.electrician.electrician_name }}</td>
+                            <td>{{ c.complaint_title }}</td>
+                            <td>{{ c.complaint_date|date:"d M Y" }}</td>
+                            <td>
+                                {% if c.complaint_reply %}
+                                    <span class="badge bg-success">Resolved</span>
+                                {% else %}
+                                    <span class="badge bg-warning text-dark">Pending</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if not c.complaint_reply %}
+                                <a href="{% url 'Admin:reply_complaint' c.id %}" class="btn btn-sm btn-primary">Reply</a>
+                                {% else %}
+                                <span class="text-muted">Replied</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="alert alert-info">No complaints against electricians submitted yet.</div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Seller Complaints Section -->
+    <div class="card mb-4">
+        <div class="card-header bg-info text-white">
+            <h5 class="mb-0">Complaints Against Sellers</h5>
+        </div>
+        <div class="card-body">
+            {% if seller_complaints %}
+            <div class="table-responsive">
+                <table class="table table-hover table-bordered align-middle">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>#</th>
+                            <th>User</th>
+                            <th>Seller</th>
+                            <th>Product</th>
+                            <th>Subject</th>
+                            <th>Date</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for c in seller_complaints %}
+                        <tr>
+                            <td>{{ forloop.counter }}</td>
+                            <td>{{ c.user.user_name }}</td>
+                            <td>{{ c.seller.seller_name }}</td>
+                            <td>{{ c.product.product_name }}</td>
+                            <td>{{ c.complaint_title }}</td>
+                            <td>{{ c.complaint_date|date:"d M Y" }}</td>
+                            <td>
+                                {% if c.complaint_reply %}
+                                    <span class="badge bg-success">Resolved</span>
+                                {% else %}
+                                    <span class="badge bg-warning text-dark">Pending</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if not c.complaint_reply %}
+                                <a href="{% url 'Admin:reply_complaint' c.id %}" class="btn btn-sm btn-primary">Reply</a>
+                                {% else %}
+                                <span class="text-muted">Replied</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="alert alert-info">No complaints against sellers submitted yet.</div>
+            {% endif %}
+        </div>
+    </div>
 </div>
 {% endblock %}

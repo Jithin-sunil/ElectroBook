@@ -247,8 +247,14 @@ def sellerverification(request):
 
 def view_complaints(request):
     # show all complaints to admin
-    complaints = tbl_complaint.objects.all().order_by('-complaint_date')
-    return render(request, 'Administrator/view_complaints.html', {'complaints': complaints})
+    site_complaints = tbl_complaint.objects.filter(complaint_type=3).order_by('-complaint_date')
+    electrician_complaints = tbl_complaint.objects.filter(complaint_type=2).order_by('-complaint_date')
+    seller_complaints = tbl_complaint.objects.filter(complaint_type=1).order_by('-complaint_date')
+    return render(request, 'Administrator/view_complaints.html', {
+        'site_complaints': site_complaints,
+        'electrician_complaints': electrician_complaints,
+        'seller_complaints': seller_complaints
+    })
 
 
 def reply_complaint(request, complaint_id):
@@ -350,6 +356,14 @@ def rejectelectrician(request,did):
 def viewelectrician(request):
     aelectricians = tbl_electrician.objects.filter(electrician_status=1)
     relectricians = tbl_electrician.objects.filter(electrician_status=2)
+    
+    # Add complaint count to each electrician
+    for electrician in aelectricians:
+        electrician.complaint_count = tbl_complaint.objects.filter(electrician=electrician, complaint_type=2, user_solved=False).count()
+    
+    for electrician in relectricians:
+        electrician.complaint_count = tbl_complaint.objects.filter(electrician=electrician, complaint_type=2, user_solved=False).count()
+    
     if request.method=="POST":
         return redirect('Admin:viewelectrician')
     else:
@@ -369,9 +383,33 @@ def bookingreport(request):
     if "aid" not in request.session:
         return redirect('Guest:login')
     if  request.method == "POST":
-        cart=tbl_cart.objects.filter(booking__booking_date__gt=request.POST.get("txt_fromdate"),booking__booking_date__lt=request.POST.get("txt_todate"))
+        cart=tbl_cart.objects.filter(booking__booking_date__gt=request.POST.get("txt_fromdate"),booking__booking_date__lt=request.POST.get("txt_todate"),booking__booking_status__gt=1)
         return render(request,'Administrator/BookingReport.html',{'cart':cart})
     else:    
         return render(request,'Administrator/BookingReport.html')
+
+def block_electrician(request, eid):
+    electrician = tbl_electrician.objects.get(id=eid)
+    electrician.electrician_status = 2  # blocked
+    electrician.save()
+    return redirect('Admin:view_complaints')
+
+def unblock_electrician(request, eid):
+    electrician = tbl_electrician.objects.get(id=eid)
+    electrician.electrician_status = 1  # active
+    electrician.save()
+    return redirect('Admin:view_complaints')
+
+def block_seller(request, sid):
+    seller = tbl_seller.objects.get(id=sid)
+    seller.seller_status = 2  # blocked
+    seller.save()
+    return redirect('Admin:view_complaints')
+
+def unblock_seller(request, sid):
+    seller = tbl_seller.objects.get(id=sid)
+    seller.seller_status = 1  # active
+    seller.save()
+    return redirect('Admin:view_complaints')
 
 

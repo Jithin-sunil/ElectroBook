@@ -30,9 +30,14 @@
                     {% if i.total_stock == 0 %}
                         <span class="text-danger fw-bold">Out Of Stock</span>
                     {% else %}
-                        <a href="{% url 'User:Addcart' i.id %}" class="btn btn-primary btn-sm rounded-pill">
-                            <i class="fa-solid fa-cart-plus"></i> Add to Cart
-                        </a>
+                        <div class="d-flex justify-content-center gap-2 flex-wrap">
+                            <a href="{% url 'User:product_detail' i.id %}" class="btn btn-outline-primary btn-sm rounded-pill">
+                                <i class="fa-solid fa-eye"></i> View More
+                            </a>
+                            <a href="{% url 'User:Addcart' i.id %}" class="btn btn-primary btn-sm rounded-pill">
+                                <i class="fa-solid fa-cart-plus"></i> Add to Cart
+                            </a>
+                        </div>
                     {% endif %}
                 </div>
             </div>

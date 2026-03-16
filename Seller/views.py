@@ -52,10 +52,13 @@ def sellerhomepage(request):
     if 'sid' not in request.session:
         return redirect('Guest:login')
     seller_id = request.session['sid']
+    seller = tbl_seller.objects.get(id=seller_id)
     products = tbl_product.objects.filter(seller=seller_id)[:8]
     product_count = tbl_product.objects.filter(seller=seller_id).count()
     order_count = tbl_cart.objects.filter(product__seller=seller_id, cart_status__gte=2).values('booking').distinct().count()
-    return render(request, 'Seller/Sellerhomepage.html', {'products': products, 'product_count': product_count, 'order_count': order_count})
+    complaint_count = tbl_complaint.objects.filter(seller=seller, complaint_type=1, user_solved=False).count()
+    warning = complaint_count > 5
+    return render(request, 'Seller/Sellerhomepage.html', {'products': products, 'product_count': product_count, 'order_count': order_count, 'warning': warning, 'complaint_count': complaint_count})
 
 def product(request):
     sellerid=tbl_seller.objects.get(id=request.session["sid"])
@@ -77,10 +80,21 @@ def product(request):
         product_name=request.POST.get("txt_name")
         product_description=request.POST.get("txt_desc")
         product_photo=request.FILES.get('txt_photo')
+        extra_photos = request.FILES.getlist('product_photos')
         product_price=request.POST.get("txt_price")
         subcategory_id=tbl_subcategory.objects.get(id=request.POST.get("subcategory"))
         seller_id=tbl_seller.objects.get(id=request.session["sid"])
-        tbl_product.objects.create(product_name=product_name,product_description=product_description,product_photo=product_photo,product_price=product_price,subcategory=subcategory_id,seller=seller_id,)
+        p = tbl_product.objects.create(
+            product_name=product_name,
+            product_description=product_description,
+            product_photo=product_photo,
+            product_price=product_price,
+            subcategory=subcategory_id,
+            seller=seller_id,
+        )
+        for photo in extra_photos:
+            if photo:
+                tbl_product_image.objects.create(product=p, product_image=photo)
         return redirect('Seller:product')
     else:
         return render(request,'Seller/Product.html',{'category':category,'subcategory':subcategory,'product':product})
